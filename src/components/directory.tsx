@@ -18,6 +18,7 @@ import {
 } from "@/lib/filters";
 import { isPublic } from "@/lib/expiry";
 import { ListingCard } from "./listing-card";
+import { ExampleProfile } from "./example-profile";
 import { Icon } from "./icon";
 export function Directory({
   data,
@@ -273,6 +274,8 @@ export function Directory({
             <ListingCard key={l.id} listing={l} />
           ))}
         </div>
+      ) : !active && filters.view === "people" && !data.demo ? (
+        <ExampleProfile />
       ) : (
         <div className="empty-state">
           <span className="empty-icon">

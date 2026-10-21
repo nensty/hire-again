@@ -1739,3 +1739,57 @@ dialog::backdrop {
 .page-content > .eyebrow {
   display: block;
 }
+
+.example-preview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 42px;
+  padding: 32px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+}
+.example-intro h2 {
+  font: 34px/1.2 var(--serif);
+  margin-top: 12px;
+}
+.example-intro p {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 15px;
+  max-width: 390px;
+}
+.example-intro .hint {
+  font-size: 11px;
+}
+.example-intro .button {
+  margin-top: 23px;
+}
+.example-badge {
+  font-size: 10px;
+  padding: 3px 8px;
+  background: var(--sage-light);
+  border-radius: 4px;
+  color: var(--sage);
+}
+.example-note {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+@media (max-width: 800px) {
+  .example-preview {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    padding: 24px;
+  }
+}
+@media (max-width: 560px) {
+  .example-preview {
+    padding: 0;
+    border: 0;
+  }
+  .example-intro h2 {
+    font-size: 29px;
+  }
+}

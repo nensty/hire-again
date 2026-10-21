@@ -16,7 +16,7 @@ pnpm dev
 
 Use the existing checkout. Each Codex cloud task is isolated; do not create a Git worktree unless specifically requested. This cloud machine has pnpm at `/workspace/.tools/node_modules/.bin/pnpm` if Corepack is unavailable.
 
-Without service credentials, browsing renders an intentional empty directory and sign-in explains that email is not connected. No invented production records appear. To inspect fictional, read-only data locally:
+Without service credentials, browsing renders an empty directory and sign-in explains that email is not connected. The empty People view shows one clearly labeled fictional example profile as an illustration, with no real contact link. It is never stored, counted, or matched as a listing, and disappears when a real profile is published. To inspect the larger fictional, read-only dataset locally:
 
 ```sh
 DEMO_MODE=true pnpm dev
