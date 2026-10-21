@@ -1,0 +1,55 @@
+import Link from "next/link";
+export const metadata = { title: "About" };
+export default function About() {
+  return (
+    <article className="container page-content legal">
+      <span className="eyebrow">OUR LITTLE CORNER OF THE INTERNET</span>
+      <h1>
+        Good people.
+        <br />
+        Looking out for each other.
+      </h1>
+      <p>
+        People I’d Hire Again is an independent, non-monetized community
+        initiative for current and former PandaDoc people and teams who would
+        love to hire them.
+      </p>
+      <h2>A small space. A useful connection.</h2>
+      <p>
+        Sometimes finding your next team starts with someone saying, “You should
+        meet this person.” This is a place to make those introductions a little
+        easier.
+      </p>
+      <p>
+        People publish their own profiles. Hiring teams share their own
+        opportunities. No scraping, no rankings, no algorithms deciding who
+        deserves to be seen. Just a directory of people and roles, with a few
+        simple suggestions to help you find a fit.
+      </p>
+      <h2>Yours to manage.</h2>
+      <p>
+        Listings stay public for 30 days. Renew when you need more time, hide
+        when you need a pause, or remove your listing whenever you like. No
+        approval process. No waiting on an admin.
+      </p>
+      <p>
+        Being listed is a self-declaration, not a verification of employment or
+        a professional endorsement. Please use your own judgment when
+        connecting.
+      </p>
+      <h2>Independent, with care.</h2>
+      <p>
+        Independent community initiative. Not affiliated with or endorsed by
+        PandaDoc.
+      </p>
+      <div className="action-row">
+        <Link href="/#directory" className="button">
+          Meet the people →
+        </Link>
+        <Link href="/add/role" className="button button-outline">
+          We’re hiring
+        </Link>
+      </div>
+    </article>
+  );
+}
