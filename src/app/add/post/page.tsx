@@ -18,7 +18,7 @@ export default async function AddPost({
     redirect("/manage?notice=missing");
   const client = await supabaseServer();
   const user = client ? (await client.auth.getUser()).data.user : null;
-  if (!user && !isDemo())
+  if (edit && !user && !isDemo())
     return (
       <div className="container narrow page-content">
         <Link className="back-link" href="/?view=posts#directory">
@@ -56,10 +56,17 @@ export default async function AddPost({
         Paste a public LinkedIn post. People can find it here and read the
         original on LinkedIn. This shares a link, not a candidate profile.
       </p>
+      {!user && !edit && (
+        <p className="guest-sharing-note">
+          No account needed.{" "}
+          <Link href="/login?next=%2Fadd%2Fpost">Sign in</Link> if you’d like to
+          edit or remove your posts later.
+        </p>
+      )}
       {post ? (
         <PostForm post={post} demo={isDemo()} />
       ) : (
-        <SharePost demo={isDemo()} />
+        <SharePost demo={isDemo()} guest={!user} />
       )}
     </div>
   );

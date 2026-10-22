@@ -93,7 +93,7 @@ See `.env.example`. Set all production values in Vercel, not Git:
 | -------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | `NEXT_PUBLIC_SUPABASE_URL`             | Supabase HTTPS project URL                                                                       |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Public publishable key; RLS is mandatory                                                         |
-| `SUPABASE_SECRET_KEY`                  | Server-only secret/service-role key for cron, reports, and renewal links                         |
+| `SUPABASE_SECRET_KEY`                  | Server-only secret/service-role key for cron, reports, guest posts, and renewal links            |
 | `RESEND_API_KEY`                       | Server-only transactional email credential                                                       |
 | `EMAIL_FROM`                           | Resend-verified sender                                                                           |
 | `CRON_SECRET`                          | Random server-only secret, at least 32 characters; cron auth and HMAC renewal/rate-limit signing |
@@ -180,6 +180,14 @@ Apply **all** migrations in filename order, including `202610220001_community_po
 
 When Supabase is not configured, the same provided links are read from `src/data/shared-posts.json` and still respect their expiry. With Supabase configured, the database is authoritative: errors are shown calmly, and hidden/deleted links are not reintroduced from the file. Apply the migrations to populate the production database; saving repository files does not write to a remote Supabase project.
 
-Share one public link at `/add/post`, or choose **Paste a list** to extract many URLs, review the proposed names/roles, and share up to 50 at once. LinkedIn safety wrappers and tracking parameters are normalized locally. Duplicates are skipped, including when a partial import is retried. Optional metadata is folded away. Manage your own shared links in `/manage`. Posts are public for 30 days and retention cleanup uses the existing daily cron; post links do not receive reminder emails.
+Share one public link at `/add/post`, or choose **Paste a list** to extract many URLs, review the proposed names/roles, and share up to 50 at once when signed in (up to 5 for guests). LinkedIn safety wrappers and tracking parameters are normalized locally. Duplicates are skipped, including when a partial import is retried. Optional metadata is folded away. Manage links shared while signed in at `/manage`. Posts are public for 30 days and retention cleanup uses the existing daily cron; post links do not receive reminder emails.
 
 See [the quick UX review](docs/PRODUCT_REVIEW.md) for the sources and design decisions, and [post automation](docs/POST_AUTOMATION.md) for what is automated and what needs an approved external integration. Production service credentials remain required for sign-in and writes.
+
+### Sharing without signing in
+
+`/add/post` accepts guest submissions of public LinkedIn links. Sign-in is optional for new posts and remains required to edit owned posts, publish profiles, and publish hiring roles. Guests can share up to 5 links per hour (including pasted lists); no owner account is created. Guest records have `owner_id = null` and cannot be claimed through sign-in later. Use the report flow for corrections/removal; existing posts still expire after 30 days.
+
+Guest writes use the server-only `SUPABASE_SECRET_KEY`, `NEXT_PUBLIC_SUPABASE_URL`, and `CRON_SECRET` already needed for maintenance and reports. The existing `consume_limit` database function atomically meters attempts, including duplicates, across instances. No migration or anonymous-auth setting is needed. If these integrations or the limiter are unavailable, guest writes fail closed and the form offers sign-in instead. Never expose the secret key in client configuration.
+
+Only Vercel's overwritten `x-vercel-forwarded-for` header is trusted when `VERCEL=1`. Other hosts share one conservative quota bucket; configure a trusted ingress implementation before needing per-address limits there. Raw addresses are not stored. This limits casual abuse, not distributed botnets; add a server-verified challenge if real abuse warrants it. Direct anonymous database inserts remain forbidden by RLS. React escapes submitted text, post URLs are allowlisted/normalized, duplicate URLs are rejected, and server actions check a honeypot and explicit confirmation. Guest posts publish immediately; report review still requires an operator.

@@ -5,6 +5,9 @@ const stubs = vi.hoisted(() => ({
   demo: false,
   client: true,
   revalidate: vi.fn(),
+  admin: vi.fn(),
+  guestFrom: vi.fn(),
+  allow: vi.fn(),
 }));
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/env", () => ({ isDemo: () => stubs.demo }));
@@ -12,6 +15,8 @@ vi.mock("@/lib/supabase/server", () => ({
   supabaseServer: async () =>
     stubs.client ? { auth: { getUser: stubs.user }, from: stubs.from } : null,
 }));
+vi.mock("@/lib/supabase/admin", () => ({ supabaseAdmin: stubs.admin }));
+vi.mock("@/lib/rate-limit", () => ({ allowAction: stubs.allow }));
 vi.mock("next/cache", () => ({
   revalidateTag: stubs.revalidate,
   revalidatePath: vi.fn(),
@@ -55,6 +60,8 @@ beforeEach(() => {
   stubs.demo = false;
   stubs.client = true;
   stubs.user.mockResolvedValue({ data: { user: { id: "owner-1" } } });
+  stubs.admin.mockImplementation(() => ({ from: stubs.guestFrom }));
+  stubs.allow.mockResolvedValue(true);
 });
 describe("post write boundaries", () => {
   it("needs explicit public-post confirmation before writing", async () => {
@@ -102,7 +109,7 @@ describe("post write boundaries", () => {
       "already in the collection",
     );
     stubs.user.mockResolvedValue({ data: { user: null } });
-    expect((await savePost(null, state, form())).message).toContain(
+    expect((await savePost(id, state, form())).message).toContain(
       "sign in again",
     );
     stubs.client = false;
@@ -173,5 +180,105 @@ describe("post write boundaries", () => {
     );
     expect((await importPosts(state, f)).message).toContain("details");
     expect(stubs.from).not.toHaveBeenCalled();
+  });
+});
+
+describe("guest sharing without exposing database privileges", () => {
+  beforeEach(() => stubs.user.mockResolvedValue({ data: { user: null } }));
+  function guestQuery() {
+    const q = query({ data: { id }, error: null });
+    stubs.from.mockReset();
+    stubs.guestFrom.mockReturnValue(q);
+    return q;
+  }
+  function bulk(count: number) {
+    const f = new FormData();
+    f.set("confirmation", "on");
+    f.set(
+      "posts",
+      JSON.stringify(
+        Array.from({ length: count }, (_, i) => ({
+          url: `https://lnkd.in/p/guest-${i}`,
+          kind: "community",
+          skills: [],
+        })),
+      ),
+    );
+    return f;
+  }
+  it("creates only an ownerless validated link after quota approval, ignoring forged identity and status fields", async () => {
+    const q = guestQuery();
+    const f = form();
+    f.set("owner_id", "attacker");
+    f.set("status", "hidden");
+    f.set("expires_at", "2099-01-01");
+    await expect(savePost(null, state, f)).rejects.toThrow(
+      "redirect:/?view=posts&shared=guest#directory",
+    );
+    expect(stubs.allow).toHaveBeenCalledWith("guest-post", 5);
+    expect(stubs.from).not.toHaveBeenCalled();
+    expect(q.insert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        owner_id: null,
+        url: "https://lnkd.in/p/test-link",
+      }),
+    );
+    expect(q.insert.mock.calls[0][0]).not.toHaveProperty("status");
+    expect(q.insert.mock.calls[0][0]).not.toHaveProperty("expires_at");
+    expect(q.update).not.toHaveBeenCalled();
+  });
+  it("never gives a guest privileged edit or deletion access", async () => {
+    expect((await savePost(id, state, form())).message).toContain(
+      "sign in again",
+    );
+    const f = new FormData();
+    f.set("id", id);
+    f.set("action", "delete");
+    await expect(changePost(f)).rejects.toThrow("redirect:/login");
+    expect(stubs.admin).not.toHaveBeenCalled();
+    expect(stubs.guestFrom).not.toHaveBeenCalled();
+  });
+  it("blocks honeypots, unavailable service credentials, and rejected quota before inserts", async () => {
+    const f = form();
+    f.set("website_confirm", "bot");
+    expect((await savePost(null, state, f)).message).toContain(
+      "couldn’t share",
+    );
+    const b = bulk(1);
+    b.set("website_confirm", "bot");
+    expect((await importPosts(state, b)).message).toContain("couldn’t share");
+    expect(stubs.admin).not.toHaveBeenCalled();
+    stubs.admin.mockImplementationOnce(() => {
+      throw new Error("Not configured");
+    });
+    expect((await savePost(null, state, form())).message).toContain(
+      "isn’t connected",
+    );
+    stubs.allow.mockResolvedValue(false);
+    expect((await savePost(null, state, form())).message).toContain(
+      "hourly limit",
+    );
+    expect(stubs.guestFrom).not.toHaveBeenCalled();
+  });
+  it("meters every link in a guest list and reports partial saves without erasing the review", async () => {
+    const q = guestQuery();
+    stubs.allow.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+    const result = await importPosts(state, bulk(3));
+    expect(result.success).toBe(false);
+    expect(result.message).toContain("1 post shared.");
+    expect(result.message).toContain("2 couldn’t be saved");
+    expect(result.message).toContain("hourly limit");
+    expect(q.insert).toHaveBeenCalledTimes(1);
+    expect(q.insert).toHaveBeenCalledWith(
+      expect.objectContaining({ owner_id: null }),
+    );
+    expect(stubs.allow).toHaveBeenCalledTimes(2);
+  });
+  it("rejects larger guest lists before invoking privileged writes", async () => {
+    expect((await importPosts(state, bulk(6))).message).toContain(
+      "up to 5 posts",
+    );
+    expect(stubs.admin).not.toHaveBeenCalled();
+    expect(stubs.allow).not.toHaveBeenCalled();
   });
 });

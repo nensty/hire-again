@@ -4,6 +4,8 @@ import { revalidateTag, revalidatePath } from "next/cache";
 import { z } from "zod";
 import { supabaseServer } from "@/lib/supabase/server";
 import { isDemo } from "@/lib/env";
+import { supabaseAdmin } from "@/lib/supabase/admin";
+import { allowAction } from "@/lib/rate-limit";
 import { postSchema } from "@/lib/posts";
 import type { ActionState } from "@/lib/action-types";
 export async function savePost(
@@ -13,6 +15,8 @@ export async function savePost(
 ): Promise<ActionState> {
   if (isDemo())
     return { message: "Sharing is disabled in the fictional preview." };
+  if (form.get("website_confirm"))
+    return { message: "We couldn’t share this post. Please try again." };
   const parsed = postSchema.safeParse({
     ...Object.fromEntries(form),
     skills: String(form.get("skills") || "")
@@ -36,7 +40,24 @@ export async function savePost(
   const {
     data: { user },
   } = await client.auth.getUser();
-  if (!user) return { message: "Please sign in again to share this post." };
+  if (!user && id)
+    return { message: "Please sign in again to edit this post." };
+  let writer = client;
+  if (!user) {
+    try {
+      writer = supabaseAdmin();
+    } catch {
+      return {
+        message:
+          "Guest sharing isn’t connected yet. You can sign in to share, or try again later.",
+      };
+    }
+    if (!(await allowAction("guest-post", 5)))
+      return {
+        message:
+          "Guest sharing is temporarily unavailable or the hourly limit has been reached. Try again later, or sign in to share.",
+      };
+  }
   const { confirmation: _, ...values } = parsed.data;
   void _;
   const query = id
@@ -44,8 +65,10 @@ export async function savePost(
         .from("community_posts")
         .update(values)
         .eq("id", id)
-        .eq("owner_id", user.id)
-    : client.from("community_posts").insert({ ...values, owner_id: user.id });
+        .eq("owner_id", user!.id)
+    : writer
+        .from("community_posts")
+        .insert({ ...values, owner_id: user?.id ?? null });
   const { data, error } = await query.select("id").single();
   if (error || !data)
     return {
@@ -56,7 +79,11 @@ export async function savePost(
     };
   revalidateTag("posts", { expire: 0 });
   revalidatePath("/manage");
-  redirect(id ? "/manage?notice=saved" : "/?view=posts&shared=1#directory");
+  redirect(
+    id
+      ? "/manage?notice=saved"
+      : `/?view=posts&shared=${user ? "1" : "guest"}#directory`,
+  );
 }
 export async function changePost(form: FormData) {
   const parsed = z
@@ -76,20 +103,18 @@ export async function changePost(form: FormData) {
   const query =
     action === "delete"
       ? client.from("community_posts").delete()
-      : client
-          .from("community_posts")
-          .update(
-            action === "hide"
-              ? { status: "hidden" }
-              : action === "close"
-                ? { status: "closed" }
-                : {
-                    status: "active",
-                    expires_at: new Date(
-                      Date.now() + 30 * 86400000,
-                    ).toISOString(),
-                  },
-          );
+      : client.from("community_posts").update(
+          action === "hide"
+            ? { status: "hidden" }
+            : action === "close"
+              ? { status: "closed" }
+              : {
+                  status: "active",
+                  expires_at: new Date(
+                    Date.now() + 30 * 86400000,
+                  ).toISOString(),
+                },
+        );
   const { data, error } = await query
     .eq("id", id)
     .eq("owner_id", user.id)
@@ -108,6 +133,8 @@ export async function importPosts(
 ): Promise<ActionState> {
   if (isDemo())
     return { message: "Sharing is disabled in the fictional preview." };
+  if (form.get("website_confirm"))
+    return { message: "We couldn’t share these posts. Please try again." };
   if (form.get("confirmation") !== "on")
     return { message: "Please confirm these are publicly shared posts." };
   const raw = form.get("posts");
@@ -139,16 +166,38 @@ export async function importPosts(
   const {
     data: { user },
   } = await client.auth.getUser();
-  if (!user) return { message: "Please sign in again to share these posts." };
+  const unique = [...new Map(parsed.data.map((r) => [r.url, r])).values()];
+  if (!user && unique.length > 5)
+    return {
+      message:
+        "Share up to 5 posts without signing in, or sign in to share a larger list.",
+    };
+  let writer = client;
+  if (!user) {
+    try {
+      writer = supabaseAdmin();
+    } catch {
+      return {
+        message:
+          "Guest sharing isn’t connected yet. You can sign in to share, or try again later.",
+      };
+    }
+  }
+  let limited = false;
   let saved = 0,
     duplicate = 0,
     failed = 0;
-  for (const row of new Map(parsed.data.map((r) => [r.url, r])).values()) {
+  for (const [index, row] of unique.entries()) {
+    if (!user && !(await allowAction("guest-post", 5))) {
+      limited = true;
+      failed += unique.length - index;
+      break;
+    }
     const { confirmation: _, ...values } = row;
     void _;
-    const { error } = await client
+    const { error } = await writer
       .from("community_posts")
-      .insert({ ...values, owner_id: user.id });
+      .insert({ ...values, owner_id: user?.id ?? null });
     if (!error) saved++;
     else if (error.code === "23505") duplicate++;
     else failed++;
@@ -158,7 +207,7 @@ export async function importPosts(
     revalidatePath("/manage");
   }
   return {
-    message: `${saved} post${saved === 1 ? "" : "s"} shared.${duplicate ? ` ${duplicate} already in the collection.` : ""}${failed ? ` ${failed} couldn’t be saved; retrying will safely skip posts already shared.` : ""}`,
+    message: `${saved} post${saved === 1 ? "" : "s"} shared.${duplicate ? ` ${duplicate} already in the collection.` : ""}${failed ? ` ${failed} couldn’t be saved; retrying will safely skip posts already shared.` : ""}${limited ? " Guest sharing is temporarily unavailable or the hourly limit has been reached. Try again later, or sign in to continue." : ""}`,
     success: failed === 0,
   };
 }

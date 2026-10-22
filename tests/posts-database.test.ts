@@ -148,3 +148,46 @@ describe("post migrations, seed provenance, and ownership", () => {
     expect((await db.query("select * from reports")).rows).toHaveLength(0);
   });
 });
+
+it("lets the server publish a guest link without allowing any signed-in user to claim, edit, or delete it", async () => {
+  const guest = "40000000-0000-4000-8000-000000000004";
+  await as("service_role");
+  await db.exec(
+    `insert into community_posts(id,owner_id,url) values('${guest}',null,'https://lnkd.in/p/guest-link')`,
+  );
+  await as("anon");
+  const visible = await db.query<{ owner_id: string | null; expires_at: Date }>(
+    `select owner_id,expires_at from community_posts where id='${guest}'`,
+  );
+  expect(visible.rows).toHaveLength(1);
+  expect(visible.rows[0].owner_id).toBeNull();
+  expect(new Date(visible.rows[0].expires_at).getTime()).toBeLessThan(
+    Date.now() + 31 * 86400000,
+  );
+  await as("authenticated", owner);
+  expect(
+    (
+      await db.query(
+        `update community_posts set owner_id='${owner}' where id='${guest}' returning id`,
+      )
+    ).rows,
+  ).toHaveLength(0);
+  expect(
+    (
+      await db.query(
+        `update community_posts set title='Changed' where id='${guest}' returning id`,
+      )
+    ).rows,
+  ).toHaveLength(0);
+  expect(
+    (
+      await db.query(
+        `delete from community_posts where id='${guest}' returning id`,
+      )
+    ).rows,
+  ).toHaveLength(0);
+  await as("anon");
+  expect(
+    (await db.query(`select id from community_posts where id='${guest}'`)).rows,
+  ).toHaveLength(1);
+});

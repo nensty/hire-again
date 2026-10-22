@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState, useActionState } from "react";
 import { PostForm } from "./post-form";
+import { SpamTrap } from "./spam-trap";
 import { importPosts } from "@/app/posts/actions";
 import { initialState } from "@/lib/action-types";
 import { FUNCTIONS } from "@/lib/constants";
@@ -11,7 +12,13 @@ import {
   suggestPostTags,
   type PostDraft,
 } from "@/lib/post-import";
-export function SharePost({ demo = false }: { demo?: boolean }) {
+export function SharePost({
+  demo = false,
+  guest = false,
+}: {
+  demo?: boolean;
+  guest?: boolean;
+}) {
   const [bulk, setBulk] = useState(false);
   const [listKey, setListKey] = useState(0);
   return (
@@ -32,15 +39,24 @@ export function SharePost({ demo = false }: { demo?: boolean }) {
         <BulkPostForm
           key={listKey}
           demo={demo}
+          guest={guest}
           onNew={() => setListKey((k) => k + 1)}
         />
       ) : (
-        <PostForm demo={demo} />
+        <PostForm demo={demo} guest={guest} />
       )}
     </>
   );
 }
-function BulkPostForm({ demo, onNew }: { demo: boolean; onNew: () => void }) {
+function BulkPostForm({
+  demo,
+  guest,
+  onNew,
+}: {
+  demo: boolean;
+  guest: boolean;
+  onNew: () => void;
+}) {
   const [text, setText] = useState("");
   const [drafts, setDrafts] = useState<PostDraft[] | null>(null);
   const [message, setMessage] = useState("");
@@ -54,8 +70,12 @@ function BulkPostForm({ demo, onNew }: { demo: boolean; onNew: () => void }) {
       );
       return;
     }
-    if (result.posts.length > 50) {
-      setMessage("Please split this into groups of up to 50 posts.");
+    if (result.posts.length > (guest ? 5 : 50)) {
+      setMessage(
+        guest
+          ? "Share up to 5 posts without signing in, or sign in to share a larger list."
+          : "Please split this into groups of up to 50 posts.",
+      );
       return;
     }
     setDrafts(result.posts);
@@ -133,6 +153,7 @@ function BulkPostForm({ demo, onNew }: { demo: boolean; onNew: () => void }) {
   }
   return (
     <form action={action} className="form-panel">
+      <SpamTrap />
       <h2 className="form-section-title">A quick check before sharing</h2>
       <p className="hint">
         Names and roles come from your pasted text. Correct anything that
@@ -269,6 +290,12 @@ function BulkPostForm({ demo, onNew }: { demo: boolean; onNew: () => void }) {
           </Link>
         )}
       </div>
+      {guest && (
+        <p className="hint">
+          Public for 30 days. Use Report listing to request a correction or
+          removal. Up to 5 guest posts per hour.
+        </p>
+      )}
       {demo && (
         <p className="hint">Sharing is disabled in the fictional preview.</p>
       )}

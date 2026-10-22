@@ -5,12 +5,15 @@ import { initialState } from "@/lib/action-types";
 import { POST_KINDS, type CommunityPost } from "@/lib/posts";
 import { FUNCTIONS } from "@/lib/constants";
 import { Icon } from "./icon";
+import { SpamTrap } from "./spam-trap";
 export function PostForm({
   post,
   demo = false,
+  guest = false,
 }: {
   post?: CommunityPost;
   demo?: boolean;
+  guest?: boolean;
 }) {
   const [state, action, pending] = useActionState(
     savePost.bind(null, post?.id || null),
@@ -48,6 +51,7 @@ export function PostForm({
   }
   return (
     <form action={action} className="form-panel post-form">
+      <SpamTrap />
       {demo && (
         <p className="notice">Fictional preview. Sharing is disabled.</p>
       )}
@@ -167,7 +171,11 @@ export function PostForm({
           {pending ? "Saving…" : post ? "Save changes" : "Share post"}
           <Icon name="arrow" />
         </button>
-        <p>Public for 30 days. You can edit or remove it any time.</p>
+        <p>
+          {guest
+            ? "Public for 30 days. Use Report listing to request a correction or removal. Up to 5 guest posts per hour."
+            : "Public for 30 days. You can edit or remove it any time."}
+        </p>
       </div>
     </form>
   );

@@ -57,6 +57,10 @@ test("paste a list, review names and roles, and remove a mistaken entry before s
 }) => {
   await page.goto("/add/post");
   await expect(
+    page.getByText("No account needed.", { exact: false }),
+  ).toBeVisible();
+  await expect(page.getByLabel("Email address")).toHaveCount(0);
+  await expect(
     page.getByLabel("LinkedIn post link", { exact: false }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Paste a list", exact: true }).click();

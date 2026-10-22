@@ -32,13 +32,16 @@ export default function About() {
         name, role, or skill, then open the original to read the latest
         information. A shared post is a source link, not a candidate profile or
         a claim that someone is still looking. Names and role labels come from
-        the person sharing the link, and are not independently verified.
+        the person sharing the link, and are not independently verified. No
+        sign-in is needed to share a link. Sign in before sharing if you want to
+        manage it later; guest posts can be reported for correction or removal.
       </p>
       <h2>Yours to manage.</h2>
       <p>
-        Listings stay public for 30 days. Renew when you need more time, hide
-        when you need a pause, or remove your listing whenever you like. No
-        approval process. No waiting on an admin.
+        For profiles, roles, and posts shared while signed in, you’re in
+        control. Listings stay public for 30 days. Renew when you need more
+        time, hide when you need a pause, or remove your listing whenever you
+        like. No approval process. No waiting on an admin.
       </p>
       <p>
         Being listed is a self-declaration, not a verification of employment or

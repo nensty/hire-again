@@ -45,10 +45,12 @@ export default function Privacy() {
       <p>
         Sharing a post does not create a candidate profile. Post links are
         public for 30 days, can be reported, and follow the same hidden/expired
-        retention rules as listings. The person who shared a post can edit,
-        hide, renew, or delete it. If a post concerns you, use Report listing or
-        contact the project operator to request removal. Shared posts do not
-        receive reminder emails.
+        retention rules as listings. No account or email is required to share a
+        link. If you sign in before sharing, you can edit, hide, renew, or
+        delete your post. Guest posts cannot be claimed or edited by signing in
+        afterward. If a post concerns you, use Report listing or contact the
+        project operator to request removal. Shared posts do not receive
+        reminder emails.
       </p>
       <h2>Why we use it</h2>
       <p>
@@ -70,10 +72,10 @@ export default function Privacy() {
       <h2>Cookies and safety</h2>
       <p>
         Essential session cookies keep you signed in. No advertising cookies are
-        used. To reduce abuse of sign-in and reports, the server can store a
-        keyed hash of the request IP address in hourly rate-limit buckets for up
-        to one day. Raw IP addresses are not stored in the application database.
-        Hosting providers may retain request logs.
+        used. To reduce abuse of sign-in, guest post sharing, and reports, the
+        server can store a keyed hash of the request IP address in hourly
+        rate-limit buckets for up to one day. Raw IP addresses are not stored in
+        the application database. Hosting providers may retain request logs.
       </p>
       <h2>Retention</h2>
       <p>

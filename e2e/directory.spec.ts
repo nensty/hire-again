@@ -170,6 +170,8 @@ test("key pages have no automated WCAG AA violations or mobile overflow", async 
   await page.setViewportSize({ width: 375, height: 900 });
   for (const [name, path] of [
     ["home", "/"],
+    ["about", "/about"],
+    ["add-post", "/add/post"],
     ["hiring", "/?view=roles"],
     ["profile", "/people/alex-morgan-demo"],
     ["role", "/roles/northstar-product-designer-demo"],

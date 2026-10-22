@@ -4,7 +4,7 @@ Implemented now:
 
 1. Paste one post link or a list of comments/introductions into Share a post.
 2. The app locally extracts URLs, unwraps LinkedIn safety links, removes tracking parameters, deduplicates links, and proposes tags from the role text supplied alongside each link.
-3. Review names and roles, remove unwanted entries, and share the list. All writes use Supabase Auth and owner-only RLS. Retrying safely skips links already in the collection.
+3. Review names and roles, remove unwanted entries, and share the list. Signed-in submissions use Supabase Auth and owner-only RLS. Guests can share up to five links per hour through a server-only, rate-limited path; guest records have no owner and cannot be claimed afterward. Anonymous database inserts remain blocked. Retrying safely skips links already in the collection.
 
 This does not fetch LinkedIn pages, discover people, read comments, or invent missing metadata. Names and professional roles are searchable labels provided by the sharer; a post entry is not a self-published candidate profile. The initial data is the organizer's eight explicit links. No original post dates or current job status were independently verified.
 

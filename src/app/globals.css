@@ -1095,7 +1095,7 @@ svg {
   line-height: 1.85;
   color: #565950;
 }
-.legal a {
+.legal a:not(.button) {
   text-decoration: underline;
   color: var(--sage);
   text-underline-offset: 3px;
@@ -2100,4 +2100,15 @@ dialog::backdrop {
   .post-desktop-function {
     display: none;
   }
+}
+
+.guest-sharing-note {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 16px;
+}
+.guest-sharing-note a {
+  color: var(--sage);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }

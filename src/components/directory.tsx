@@ -306,6 +306,13 @@ export function Directory({
               </Link>
             </p>
           )}
+        {postsView &&
+          new URLSearchParams(initialQuery).get("shared") === "guest" && (
+            <p className="notice" role="status">
+              Post shared. It’s public for 30 days. Use Report listing if you
+              need a correction or removal.
+            </p>
+          )}
         <div className="discovery-search">
           <div className="search-row">
             <label className="search-box">

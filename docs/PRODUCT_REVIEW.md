@@ -43,3 +43,9 @@ Direct access to LinkedIn, Nielsen Norman Group pages, and the GOV.UK website wa
 Find Aleksandra's engineering-manager post by name or role; find Python roles/posts; switch between Profiles, Hiring now, and Shared posts; open a shareable filtered URL; paste a list, review it, and remove a mistaken entry; use the product at 375/430/768/1440px with keyboard and accessible labels. Verify public/owner-only/expired SQL policies independently of the UI.
 
 Success to measure with real users later: can a hiring manager find a relevant post in under two minutes, and can a contributor share a link without explanation? Do not add tracking or claim that this target has been proven by the automated tests.
+
+## Follow-up: reduce contribution friction
+
+The organizer encountered a sign-in wall when trying to share a public post. New post submissions now allow guests, while profiles, roles, and editing remain authenticated. Guests get five links per hour through a server-only write path, an atomic database quota, input validation, a honeypot, and duplicate handling. An optional sign-in link explains the benefit: managing the post later. Guest submissions are ownerless and cannot be claimed by an unrelated account. The success receipt and privacy page explain reporting for corrections/removal. No moderation queue or new identity provider was introduced.
+
+The About page's general link color overrode filled-button text. Its text-link selector now excludes buttons, preserving readable labels in default and hover states.
