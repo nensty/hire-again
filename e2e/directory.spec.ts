@@ -6,7 +6,7 @@ test("people search and shareable filters work without reloading", async ({
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "People I’d",
+    "Find your next",
   );
   await expect(
     page.getByText("All people and teams below are fictional.", {
@@ -151,6 +151,16 @@ for (const width of [375, 430, 768, 1440])
       path: `test-results/directory-${width}.png`,
       fullPage: true,
     });
+    await page.getByRole("button", { name: "Hiring now 3" }).click();
+    await expect(
+      page.getByRole("heading", { name: "Find your next team." }),
+    ).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+      "vacancy list",
+    ).toBe(true);
   });
 
 test("key pages have no automated WCAG AA violations or mobile overflow", async ({
@@ -160,6 +170,7 @@ test("key pages have no automated WCAG AA violations or mobile overflow", async 
   await page.setViewportSize({ width: 375, height: 900 });
   for (const [name, path] of [
     ["home", "/"],
+    ["hiring", "/?view=roles"],
     ["profile", "/people/alex-morgan-demo"],
     ["role", "/roles/northstar-product-designer-demo"],
     ["login", "/login"],

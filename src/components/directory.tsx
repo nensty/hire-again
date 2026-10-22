@@ -176,38 +176,12 @@ export function Directory({
   return (
     <section
       id="directory"
-      className={`directory container ${postsView ? "directory-posts" : ""}`}
+      className={`directory discovery container ${postsView ? "directory-posts" : filters.view === "roles" ? "directory-roles" : "directory-people"}`}
       aria-label="Community directory"
     >
-      {data.demo && (
-        <p className="notice demo-notice">
-          {postsView
-            ? "Development preview · Shared posts link to their original sources. Sharing is disabled."
-            : "Development preview · All people and teams below are fictional. Publishing is disabled."}
-        </p>
-      )}
-      {postsView && new URLSearchParams(initialQuery).get("shared") === "1" && (
-        <p className="notice" role="status">
-          Post shared.{" "}
-          <Link href="/manage" className="text-link">
-            Manage your posts →
-          </Link>
-        </p>
-      )}
-      <div className="directory-heading">
-        <div className="tabs" role="group" aria-label="Directory view">
-          <button
-            aria-pressed={filters.view === "people"}
-            onClick={() => update({ view: "people", postType: "" })}
-          >
-            People <span>{data.unavailable ? "—" : people.length}</span>
-          </button>
-          <button
-            aria-pressed={filters.view === "roles"}
-            onClick={() => update({ view: "roles", postType: "" })}
-          >
-            Hiring now <span>{data.unavailable ? "—" : roles.length}</span>
-          </button>
+      <aside className="discovery-sidebar">
+        <p className="sidebar-label">EXPLORE</p>
+        <div className="discovery-nav" role="group" aria-label="Directory view">
           <button
             aria-pressed={postsView}
             onClick={() =>
@@ -219,244 +193,341 @@ export function Directory({
               })
             }
           >
-            Posts <span>{postsUnavailable ? "—" : publicPosts.length}</span>
+            <Icon name="link" />
+            <span className="nav-label">
+              Shared posts <small aria-hidden="true">Saved from LinkedIn</small>
+            </span>
+            <span className="nav-count">
+              {postsUnavailable ? "—" : publicPosts.length}
+            </span>
+          </button>
+          <button
+            aria-pressed={filters.view === "people"}
+            onClick={() => update({ view: "people", postType: "" })}
+          >
+            <Icon name="people" />
+            <span className="nav-label">
+              Profiles{" "}
+              <small aria-hidden="true">Profiles added by their owners</small>
+            </span>
+            <span className="nav-count">
+              {data.unavailable ? "—" : people.length}
+            </span>
+          </button>
+          <button
+            aria-pressed={filters.view === "roles"}
+            onClick={() => update({ view: "roles", postType: "" })}
+          >
+            <Icon name="briefcase" />
+            <span className="nav-label">
+              Hiring now{" "}
+              <small aria-hidden="true">Open roles from hiring teams</small>
+            </span>
+            <span className="nav-count">
+              {data.unavailable ? "—" : roles.length}
+            </span>
           </button>
         </div>
-        <span className="directory-aside">
-          A good next chapter starts with a hello.
-        </span>
-      </div>
-      <div className="search-row">
-        <label className="search-box">
-          <Icon name="search" />
-          <span className="sr-only">Search directory</span>
-          <input
-            type="search"
-            placeholder={
-              filters.view === "people"
-                ? "A name, role, skill, or place…"
-                : postsView
-                  ? "Find a name, role, skill, or post…"
-                  : "A company, role, skill, or place…"
-            }
-            value={filters.q}
-            onChange={(e) => update({ q: e.target.value })}
-            maxLength={200}
-          />
-          {filters.q && (
-            <button onClick={() => update({ q: "" })} aria-label="Clear search">
-              <Icon name="close" />
-            </button>
-          )}
-        </label>
-        {postsView && (
-          <div className="post-desktop-function">{functionFilter}</div>
-        )}
-        <button
-          className={`button button-outline mobile-filter ${postsView ? "posts-filter" : ""}`}
-          onClick={() => setDrawer(true)}
-        >
-          <Icon name="filter" />
-          Filters{active && <span aria-hidden="true"> •</span>}
-        </button>
-      </div>
-      {!postsView && (
-        <div className="desktop-filter-bar">
-          {functionFilter}
-          <details
-            className="more-filters"
-            open={
-              Boolean(
-                filters.skills ||
-                filters.regions.length ||
-                filters.workModes.length ||
-                filters.seniority,
-              ) || undefined
-            }
-          >
-            <summary>
-              <Icon name="filter" />
-              {postsView ? "Skills" : "More filters"}
-            </summary>
-            <div className="desktop-filters">{filterFields}</div>
-          </details>
-        </div>
-      )}
-      {drawer && (
-        <div className="sheet-backdrop" onClick={(event) => {
-          if (event.target === event.currentTarget) setDrawer(false);
-        }}>
-          <FilterSheet onClose={() => setDrawer(false)}>
-            {functionFilter}
-            {filterFields}
-            <button className="button" onClick={() => setDrawer(false)}>
-              Show {count} {count === 1 ? "result" : "results"}
-              <Icon name="arrow" />
-            </button>
-          </FilterSheet>
-        </div>
-      )}
-      {postsView && (
-        <div className="post-toolbar">
-          <div className="post-kinds" role="group" aria-label="Post type">
-            {[["", "All posts"], ...Object.entries(POST_KINDS)].map(
-              ([value, label]) => (
-                <button
-                  key={value}
-                  aria-pressed={filters.postType === value}
-                  onClick={() => update({ postType: value })}
-                >
-                  {label}
-                </button>
-              ),
-            )}
-          </div>
-          <Link href="/add/post" className="text-link">
-            Share a post <Icon name="plus" />
+        <div className="sidebar-note">
+          <p className="sidebar-note-label">HOW IT WORKS</p>
+          <h2>
+            Find. Read.
+            <br />
+            Reach out.
+          </h2>
+          <p>
+            Search by name, role, or skill. Find someone interesting? Start with
+            their original post or profile.
+          </p>
+          <Link href="/about" className="text-link">
+            How this works <Icon name="arrow" />
           </Link>
         </div>
-      )}
-      <div className="results-meta" aria-live="polite">
-        <p>
-          {unavailable ? (
-            "Results aren’t available right now."
-          ) : (
-            <>
-              {count}{" "}
+        <Link href="/manage" className="sidebar-manage">
+          Manage your listings <Icon name="arrow" />
+        </Link>
+      </aside>
+      <div className="discovery-content">
+        <div className="discovery-view-heading">
+          <div>
+            <p className="eyebrow">
               {postsView
-                ? count === 1
-                  ? "post"
-                  : "posts"
+                ? "SAVED FROM THE FEED"
                 : filters.view === "people"
-                  ? listings.length === 1
-                    ? "person"
-                    : "people"
-                  : listings.length === 1
-                    ? "role"
-                    : "roles"}
-              {active
-                ? " matching your search"
-                : postsView
-                  ? " shared by the community"
-                  : filters.view === "people"
-                    ? " ready for a new chapter"
-                    : " looking for good people"}
-            </>
-          )}
-        </p>
-        {active ? (
-          <button
-            className="text-button"
-            onClick={() => update({ ...EMPTY_FILTERS, view: filters.view })}
+                  ? "DIRECT FROM THE COMMUNITY"
+                  : "TEAMS OPENING DOORS"}
+            </p>
+            <h2>
+              {postsView
+                ? "People behind the posts."
+                : filters.view === "people"
+                  ? "Meet your next teammate."
+                  : "Find your next team."}
+            </h2>
+            <p>
+              {postsView
+                ? "Community-shared links, easy to find again. Open the original post for current availability and contact details."
+                : filters.view === "people"
+                  ? "Get to know people through profiles they’ve published themselves."
+                  : "Opportunities shared by hiring teams. Explore a role and make your next move."}
+            </p>
+          </div>
+          <Link
+            href={
+              postsView
+                ? "/add/post"
+                : filters.view === "people"
+                  ? "/add/person"
+                  : "/add/role"
+            }
+            className="button button-small"
           >
-            Clear filters
-          </button>
-        ) : (
-          <span>
+            <Icon name="plus" />
             {postsView
-              ? "Open the original for the latest update."
-              : "Good people. Real opportunities."}
-          </span>
+              ? "Share a post"
+              : filters.view === "people"
+                ? "Add yourself"
+                : "Post a role"}
+          </Link>
+        </div>
+        {data.demo && (
+          <p className="notice demo-notice">
+            {postsView
+              ? "Development preview · Shared posts link to their original sources. Sharing is disabled."
+              : "Development preview · All people and teams below are fictional. Publishing is disabled."}
+          </p>
         )}
-      </div>
-      {unavailable ? (
-        <div className="empty-state" role="status">
-          <h3>A little pause.</h3>
-          <p>We couldn’t load the directory. Please try again in a moment.</p>
-          <button
-            className="button button-outline"
-            onClick={() => location.reload()}
-          >
-            Try again
-          </button>
+        {postsView &&
+          new URLSearchParams(initialQuery).get("shared") === "1" && (
+            <p className="notice" role="status">
+              Post shared.{" "}
+              <Link href="/manage" className="text-link">
+                Manage your posts →
+              </Link>
+            </p>
+          )}
+        <div className="discovery-search">
+          <div className="search-row">
+            <label className="search-box">
+              <Icon name="search" />
+              <span className="sr-only">Search directory</span>
+              <input
+                type="search"
+                placeholder={
+                  filters.view === "people"
+                    ? "A name, role, skill, or place…"
+                    : postsView
+                      ? "Find a name, role, skill, or post…"
+                      : "A company, role, skill, or place…"
+                }
+                value={filters.q}
+                onChange={(e) => update({ q: e.target.value })}
+                maxLength={200}
+              />
+              {filters.q && (
+                <button
+                  onClick={() => update({ q: "" })}
+                  aria-label="Clear search"
+                >
+                  <Icon name="close" />
+                </button>
+              )}
+            </label>
+            <div className="discovery-function">{functionFilter}</div>
+            <button
+              className="button button-outline discovery-filter"
+              onClick={() => setDrawer(true)}
+            >
+              <Icon name="filter" />
+              Filters{active && <span aria-hidden="true"> •</span>}
+            </button>
+          </div>
+          {drawer && (
+            <div
+              className="sheet-backdrop"
+              onClick={(event) => {
+                if (event.target === event.currentTarget) setDrawer(false);
+              }}
+            >
+              <FilterSheet onClose={() => setDrawer(false)}>
+                {functionFilter}
+                {filterFields}
+                <button className="button" onClick={() => setDrawer(false)}>
+                  Show {count} {count === 1 ? "result" : "results"}
+                  <Icon name="arrow" />
+                </button>
+              </FilterSheet>
+            </div>
+          )}
+          {postsView && (
+            <div className="post-toolbar">
+              <div className="post-kinds" role="group" aria-label="Post type">
+                {[["", "All posts"], ...Object.entries(POST_KINDS)].map(
+                  ([value, label]) => (
+                    <button
+                      key={value}
+                      aria-pressed={filters.postType === value}
+                      onClick={() => update({ postType: value })}
+                    >
+                      {label}
+                    </button>
+                  ),
+                )}
+              </div>
+            </div>
+          )}
         </div>
-      ) : postsView && postMatches.length ? (
-        <div className="listing-grid post-grid">
-          {postMatches.map((post) => (
-            <PostCard key={post.id} post={post} />
-          ))}
-        </div>
-      ) : !postsView && listings.length ? (
-        <div className={`listing-grid ${pending ? "updating" : ""}`}>
-          {listings.map((l) => (
-            <ListingCard key={l.id} listing={l} />
-          ))}
-        </div>
-      ) : !active && filters.view === "people" && !data.demo ? (
-        <ExampleProfile />
-      ) : (
-        <div className="empty-state">
-          <span className="empty-icon">
-            <Icon name={active ? "search" : "heart"} />
-          </span>
-          <h3>
-            {active
-              ? "No matches just yet."
-              : postsView
-                ? "A good post deserves to be found."
-                : filters.view === "people"
-                  ? "Someone great will be here soon."
-                  : "The next opportunity starts here."}
-          </h3>
+        <div className="results-meta" aria-live="polite">
           <p>
-            {active
-              ? "Try a broader search or clear a filter. The right connection might be one click away."
-              : postsView
-                ? "Share a public LinkedIn post so the next person can find it."
-                : filters.view === "people"
-                  ? "Looking for your next team? Be the first to add yourself."
-                  : "Hiring PandaDoc people? Share an opportunity with the community."}
+            {unavailable ? (
+              "Results aren’t available right now."
+            ) : (
+              <>
+                {count}{" "}
+                {postsView
+                  ? count === 1
+                    ? "post"
+                    : "posts"
+                  : filters.view === "people"
+                    ? listings.length === 1
+                      ? "person"
+                      : "people"
+                    : listings.length === 1
+                      ? "role"
+                      : "roles"}
+                {active
+                  ? " matching your search"
+                  : postsView
+                    ? " shared by the community"
+                    : filters.view === "people"
+                      ? " in the community"
+                      : " from hiring teams"}
+              </>
+            )}
           </p>
           {active ? (
             <button
-              className="button button-outline"
+              className="text-button"
               onClick={() => update({ ...EMPTY_FILTERS, view: filters.view })}
             >
               Clear filters
             </button>
           ) : (
-            <Link
-              className="button"
-              href={
-                postsView
-                  ? "/add/post"
-                  : filters.view === "people"
-                    ? "/add/person"
-                    : "/add/role"
-              }
-            >
+            <span>
               {postsView
-                ? "Share a post"
-                : filters.view === "people"
-                  ? "Add yourself"
-                  : "Share a role"}
-              <Icon name="arrow" />
-            </Link>
+                ? "Open the original for the latest update."
+                : "Good people. Real opportunities."}
+            </span>
           )}
         </div>
-      )}
-      <aside className="community-strip">
-        <div>
-          <span className="eyebrow">MAKE A CONNECTION</span>
-          <h3>
-            {postsView
-              ? "Found another useful post?"
-              : "Know someone who should be here?"}
-          </h3>
-          <p>
-            {postsView
-              ? "Keep it findable for the next person."
-              : "A small share can open a big door."}
-          </p>
-        </div>
-        <Link
-          href={postsView ? "/add/post" : "/add/role"}
-          className="button button-outline"
-        >
-          {postsView ? "Share a post" : "We’re hiring"}
-          <Icon name="arrow" />
-        </Link>
-      </aside>
+        {unavailable ? (
+          <div className="empty-state" role="status">
+            <h3>A little pause.</h3>
+            <p>We couldn’t load the directory. Please try again in a moment.</p>
+            <button
+              className="button button-outline"
+              onClick={() => location.reload()}
+            >
+              Try again
+            </button>
+          </div>
+        ) : postsView && postMatches.length ? (
+          <div className="post-list">
+            <div className="post-list-heading" aria-hidden="true">
+              <span>PERSON / POST</span>
+              <span>FOCUS</span>
+              <span>ORIGINAL SOURCE</span>
+            </div>
+            {postMatches.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
+        ) : !postsView && listings.length ? (
+          <div
+            className={`listing-grid ${filters.view === "roles" ? "role-list" : "people-grid"} ${pending ? "updating" : ""}`}
+          >
+            {listings.map((l) => (
+              <ListingCard key={l.id} listing={l} />
+            ))}
+          </div>
+        ) : !active && filters.view === "people" && !data.demo ? (
+          <>
+            {!postsUnavailable && publicPosts.length > 0 && (
+              <div className="empty-source-link">
+                <p>
+                  No profiles published yet. You can still find people through
+                  their shared posts.
+                </p>
+                <button
+                  className="text-link"
+                  onClick={() =>
+                    update({
+                      view: "posts",
+                      postType: "",
+                      seniority: "",
+                      regions: [],
+                      workModes: [],
+                    })
+                  }
+                >
+                  Browse {publicPosts.length} shared posts <Icon name="arrow" />
+                </button>
+              </div>
+            )}
+            <ExampleProfile />
+          </>
+        ) : (
+          <div className="empty-state">
+            <span className="empty-icon">
+              <Icon name={active ? "search" : "heart"} />
+            </span>
+            <h3>
+              {active
+                ? "No matches just yet."
+                : postsView
+                  ? "A good post deserves to be found."
+                  : filters.view === "people"
+                    ? "Someone great will be here soon."
+                    : "The next opportunity starts here."}
+            </h3>
+            <p>
+              {active
+                ? "Try a broader search or clear a filter. The right connection might be one click away."
+                : postsView
+                  ? "Share a public LinkedIn post so the next person can find it."
+                  : filters.view === "people"
+                    ? "Looking for your next team? Be the first to add yourself."
+                    : "Hiring PandaDoc people? Share an opportunity with the community."}
+            </p>
+            {active ? (
+              <button
+                className="button button-outline"
+                onClick={() => update({ ...EMPTY_FILTERS, view: filters.view })}
+              >
+                Clear filters
+              </button>
+            ) : (
+              <Link
+                className="button"
+                href={
+                  postsView
+                    ? "/add/post"
+                    : filters.view === "people"
+                      ? "/add/person"
+                      : "/add/role"
+                }
+              >
+                {postsView
+                  ? "Share a post"
+                  : filters.view === "people"
+                    ? "Add yourself"
+                    : "Share a role"}
+                <Icon name="arrow" />
+              </Link>
+            )}
+          </div>
+        )}
+      </div>
     </section>
   );
 }
@@ -480,7 +551,7 @@ function FilterSheet({
       onCancel={onClose}
     >
       <div className="sheet-title">
-        <h2 id="filter-title">Find your people</h2>
+        <h2 id="filter-title">Refine your search</h2>
         <button
           className="icon-button"
           onClick={onClose}

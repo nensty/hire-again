@@ -3,6 +3,8 @@ export function Icon({
   className = "",
 }: {
   name:
+    | "people"
+    | "briefcase"
     | "arrow"
     | "search"
     | "plus"
@@ -16,6 +18,18 @@ export function Icon({
   className?: string;
 }) {
   const paths = {
+    people: (
+      <>
+        <circle cx="9" cy="7" r="3" />
+        <path d="M3 21v-3a6 6 0 0 1 12 0v3M16 4a3 3 0 0 1 0 6m2 5a5 5 0 0 1 3 5v1" />
+      </>
+    ),
+    briefcase: (
+      <>
+        <rect x="3" y="7" width="18" height="14" rx="2" />
+        <path d="M8 7V3h8v4M3 12a22 22 0 0 0 18 0M12 12v4" />
+      </>
+    ),
     arrow: <path d="M4 12h16m-6-6 6 6-6 6" />,
     search: (
       <>

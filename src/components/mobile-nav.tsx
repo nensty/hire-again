@@ -12,7 +12,7 @@ export function MobileNav() {
           if (menu.current) menu.current.open = false;
         }}
       >
-        <Link href="/?view=people#directory">Browse people</Link>
+        <Link href="/?view=people#directory">People profiles</Link>
         <Link href="/?view=roles#directory">Hiring now</Link>
         <Link href="/?view=posts#directory">Community posts</Link>
         <Link href="/add/post">Share a LinkedIn post</Link>

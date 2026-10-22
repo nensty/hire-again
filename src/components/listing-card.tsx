@@ -11,7 +11,7 @@ export function ListingCard({
 }) {
   const person = isCandidate(listing);
   return (
-    <article className="listing-card">
+    <article className={`listing-card ${person ? "person-card" : "role-card"}`}>
       <div className="card-top">
         <span className="eyebrow">{listing.function}</span>
         <span className="availability">
@@ -19,19 +19,33 @@ export function ListingCard({
           {person ? "Open to work" : "Hiring now"}
         </span>
       </div>
-      <h3>
-        <Link href={`/${person ? "people" : "roles"}/${listing.slug}`}>
-          {person ? listing.full_name : listing.role_title}
-        </Link>
-      </h3>
-      <p className="card-role">
-        {person ? listing.target_role : listing.company_name}
-      </p>
-      <p className="card-history">
-        {person
-          ? listing.pandadoc_role || "PandaDoc community"
-          : `${listing.seniority} · ${listing.function}`}
-      </p>
+      <div className="listing-identity">
+        <span
+          className={`listing-monogram ${person ? "" : "company-monogram"}`}
+          aria-hidden="true"
+        >
+          {(person ? listing.full_name : listing.company_name)
+            .split(/\s+/)
+            .slice(0, 2)
+            .map((part) => part[0])
+            .join("")}
+        </span>
+        <div>
+          <h3>
+            <Link href={`/${person ? "people" : "roles"}/${listing.slug}`}>
+              {person ? listing.full_name : listing.role_title}
+            </Link>
+          </h3>
+          <p className="card-role">
+            {person ? listing.target_role : listing.company_name}
+          </p>
+          <p className="card-history">
+            {person
+              ? listing.pandadoc_role || "PandaDoc community"
+              : `${listing.seniority} · ${listing.function}`}
+          </p>
+        </div>
+      </div>
       <div className="skills">
         {listing.skills.slice(0, 5).map((s) => (
           <span key={s}>{s}</span>

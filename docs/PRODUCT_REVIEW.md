@@ -8,12 +8,24 @@ Scope: the implemented product, the organizer's lost-post task, official interac
 
 Secondary tasks: find a person to hire, find a role, and publish my own profile. A post collection and an opt-in profile directory meet different needs and must remain visibly distinct.
 
-## What changed and why
+## Redesign after organizer feedback
+
+The organizer found that everything looked the same and the purpose was unclear. The redesign separates three types of content in both wording and layout:
+
+- **Shared posts**: a compact directory of names and roles, with a focus column and an explicit “Read on LinkedIn” action. A community discussion has its own label and background. Initials are typographic navigation aids, not imported photos or endorsements.
+- **Profiles**: fuller cards for profiles published by their owners, including experience, location, skills, and a profile action.
+- **Hiring now**: a vacancy list with job title, company, work arrangement, and a role action.
+
+Desktop uses a persistent navigation column; mobile uses three compact view buttons. Each view explains its source and offers one relevant contribution action. Search, Function, and Filters share one predictable control area; detailed filters open in the same accessible dialog at every size. The hero states the hiring task instead of repeating all navigation actions and counts. Empty profiles link to available shared posts while preserving the clearly fictional example requested earlier.
+
+Assumption: finding someone and reaching their original source is the primary task. This is a design judgment based on the organizer’s lost-post example, not a measured usability result. Existing consent, provenance, expiry, ownership, and publication rules are retained.
+
+## Earlier improvements retained
 
 - Put content higher on the page. Remove the decorative quotation and duplicated introduction; keep a compact product promise and direct actions.
-- Start with useful content. When there are no profiles, open the available community posts; explicit People/Posts/Hiring choices always work and stay in the URL. No invented people counts.
-- Show search and Function first. Reveal more detailed filters only when needed, with the mobile filter sheet retained. Keep post-type choices visible and hide irrelevant geography/seniority filters for posts.
-- Let people recognize names, roles, and skills on cards. One primary card action opens the original LinkedIn post. “Added” dates describe collection activity, never a fabricated original publication date.
+- Start with useful content. When there are no profiles, open the available community posts; explicit Profiles/Shared posts/Hiring choices always work and stay in the URL. No invented people counts.
+- Show search and Function first. Reveal more detailed filters only when needed, with the filter sheet retained. Keep post-type choices visible and hide irrelevant geography/seniority filters for posts.
+- Let people recognize names, roles, and skills in the results. One primary post action opens the original LinkedIn post. “Added” dates describe collection activity, never a fabricated original publication date.
 - One URL is enough to share a post. Put optional metadata behind a clearly labeled disclosure. Keep accuracy confirmation visible. No automatic profile creation.
 - Paste one copied list instead of opening seven forms. Extract and normalize links locally, skip duplicates, suggest only tags supported by the pasted role, and show a review before publishing. Unknown information remains blank.
 - Keep optional profile/role fields folded while required fields and publication consent stay visible. Show validation errors without losing entered values.
@@ -28,6 +40,6 @@ Direct access to LinkedIn, Nielsen Norman Group pages, and the GOV.UK website wa
 
 ## Small validation tasks
 
-Find Aleksandra's engineering-manager post by name or role; find Python roles/posts; switch between People, Hiring now, and Posts; open a shareable filtered URL; paste a list, review it, and remove a mistaken entry; use the product at 375/430/768/1440px with keyboard and accessible labels. Verify public/owner-only/expired SQL policies independently of the UI.
+Find Aleksandra's engineering-manager post by name or role; find Python roles/posts; switch between Profiles, Hiring now, and Shared posts; open a shareable filtered URL; paste a list, review it, and remove a mistaken entry; use the product at 375/430/768/1440px with keyboard and accessible labels. Verify public/owner-only/expired SQL policies independently of the UI.
 
 Success to measure with real users later: can a hiring manager find a relevant post in under two minutes, and can a contributor share a link without explanation? Do not add tracking or claim that this target has been proven by the automated tests.

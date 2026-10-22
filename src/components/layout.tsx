@@ -20,9 +20,9 @@ export function Header() {
           </span>
         </Link>
         <nav aria-label="Main navigation">
-          <Link href="/?view=people#directory">People</Link>
+          <Link href="/?view=people#directory">Profiles</Link>
           <Link href="/?view=roles#directory">Hiring now</Link>
-          <Link href="/?view=posts#directory">Posts</Link>
+          <Link href="/?view=posts#directory">Shared posts</Link>
           <Link href="/manage" className="nav-manage">
             Manage listing
           </Link>

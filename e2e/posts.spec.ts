@@ -5,7 +5,7 @@ test("find the supplied engineering manager post in seconds and preserve a share
 }) => {
   await page.goto("/?view=posts");
   await expect(
-    page.getByRole("button", { name: "Posts 8", exact: true }),
+    page.getByRole("button", { name: "Shared posts 8", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(".post-card")).toHaveCount(8);
   await page.getByRole("searchbox").fill("Aleksandra manager");
