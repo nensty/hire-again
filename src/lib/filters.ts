@@ -2,7 +2,8 @@ import type { PublicListing } from "./types";
 import { isCandidate } from "./types";
 import { optionKey } from "./constants";
 export interface Filters {
-  view: "people" | "roles";
+  view: "people" | "roles" | "posts";
+  postType: string;
   q: string;
   function: string;
   seniority: string;
@@ -12,6 +13,7 @@ export interface Filters {
 }
 export const EMPTY_FILTERS: Filters = {
   view: "people",
+  postType: "",
   q: "",
   function: "",
   seniority: "",
@@ -20,23 +22,35 @@ export const EMPTY_FILTERS: Filters = {
   workModes: [],
 };
 export function readFilters(params: URLSearchParams): Filters {
+  const view =
+    params.get("view") === "posts"
+      ? "posts"
+      : params.get("view") === "roles"
+        ? "roles"
+        : "people";
   return {
-    view: params.get("view") === "roles" ? "roles" : "people",
+    view,
+    postType:
+      view === "posts" &&
+      ["looking", "hiring", "community"].includes(params.get("post-type") || "")
+        ? params.get("post-type")!
+        : "",
     q: (params.get("q") || "").slice(0, 200),
     function: params.get("function") || "",
-    seniority: params.get("seniority") || "",
+    seniority: view === "posts" ? "" : params.get("seniority") || "",
     skills: (params.get("skills") || "").slice(0, 200),
-    regions: params.getAll("region"),
-    workModes: params.getAll("work-mode"),
+    regions: view === "posts" ? [] : params.getAll("region"),
+    workModes: view === "posts" ? [] : params.getAll("work-mode"),
   };
 }
 export function writeFilters(f: Filters) {
   const p = new URLSearchParams();
-  if (f.view === "roles") p.set("view", "roles");
+  p.set("view", f.view);
+  if (f.view === "posts" && f.postType) p.set("post-type", f.postType);
   for (const k of ["q", "function", "seniority", "skills"] as const)
-    if (f[k]) p.set(k, f[k]);
-  f.regions.forEach((r) => p.append("region", r));
-  f.workModes.forEach((w) => p.append("work-mode", w));
+    if (f[k] && !(f.view === "posts" && k === "seniority")) p.set(k, f[k]);
+  if (f.view !== "posts") f.regions.forEach((r) => p.append("region", r));
+  if (f.view !== "posts") f.workModes.forEach((w) => p.append("work-mode", w));
   return p.toString();
 }
 export function filterListings<T extends PublicListing>(

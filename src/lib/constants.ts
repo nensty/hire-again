@@ -37,6 +37,7 @@ export type EntityType = "candidate" | "role";
 export const ENTITY_TABLE = {
   candidate: "candidate_profiles",
   role: "hiring_roles",
+  post: "community_posts",
 } as const;
 export const slugify = (s: string) =>
   s

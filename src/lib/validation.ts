@@ -100,7 +100,7 @@ export const loginSchema = z.object({
   next: z.string().optional(),
 });
 export const reportSchema = z.object({
-  entity_type: z.enum(["candidate", "role"]),
+  entity_type: z.enum(["candidate", "role", "post"]),
   entity_id: z.uuid(),
   reason: z.enum([
     "Outdated or filled",
@@ -124,10 +124,18 @@ export function formValues(form: FormData) {
   };
 }
 export function safeNext(next: unknown): string {
-  if (typeof next !== "string" || !next.startsWith("/") || /[\\\s]/.test(next)) return "/manage";
+  if (typeof next !== "string" || !next.startsWith("/") || /[\\\s]/.test(next))
+    return "/manage";
   try {
     const url = new URL(next, "https://local.invalid");
-    if (url.origin !== "https://local.invalid" || url.pathname.startsWith("/auth") || url.pathname.startsWith("/login")) return "/manage";
+    if (
+      url.origin !== "https://local.invalid" ||
+      url.pathname.startsWith("/auth") ||
+      url.pathname.startsWith("/login")
+    )
+      return "/manage";
     return url.pathname + url.search + url.hash;
-  } catch { return "/manage"; }
+  } catch {
+    return "/manage";
+  }
 }

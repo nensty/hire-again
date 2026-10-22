@@ -11,7 +11,7 @@ export default function Privacy() {
       </h1>
       <p>
         People I’d Hire Again is a public, independent community directory. Last
-        updated: 20 October 2026.
+        updated: 22 October 2026.
       </p>
       <h2>What we collect</h2>
       <p>
@@ -32,6 +32,23 @@ export default function Privacy() {
         Share only information you are comfortable making public. We request
         that search engines do not index the site, but cannot guarantee this.
         Other people may copy or share public information.
+      </p>
+      <h2>Shared LinkedIn posts</h2>
+      <p>
+        Community members and the organizer may share links to posts that people
+        have made public, along with a name, professional role, skills, and a
+        short description. These details are supplied by the sharer, not fetched
+        from LinkedIn. We do not copy post bodies, private messages, or contact
+        information, and do not infer layoffs or current availability. The
+        original source may change or be removed.
+      </p>
+      <p>
+        Sharing a post does not create a candidate profile. Post links are
+        public for 30 days, can be reported, and follow the same hidden/expired
+        retention rules as listings. The person who shared a post can edit,
+        hide, renew, or delete it. If a post concerns you, use Report listing or
+        contact the project operator to request removal. Shared posts do not
+        receive reminder emails.
       </p>
       <h2>Why we use it</h2>
       <p>

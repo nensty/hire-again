@@ -39,7 +39,7 @@ Use the local URL and keys shown by the CLI in `.env.local`. Local auth messages
 
 ## 3. Migrations
 
-Apply `supabase/migrations/202610200001_initial.sql` to an empty project through the Supabase SQL editor, or:
+Apply all files in `supabase/migrations/` in filename order to an empty project through the Supabase SQL editor, or use the CLI below to apply pending migrations:
 
 ```sh
 supabase login
@@ -171,3 +171,15 @@ The public cache refreshes within one minute; reload the directory after that. D
 - Closing means “found a role” / “role filled”; hiding is reversible, and showing starts a fresh 30 days.
 - Auth accounts remain after listing deletion; account deletion requests go to the published contact email.
 - All service setup and real email/deployment smoke tests require owner-controlled accounts. The application is implemented without those credentials; `LAUNCH_CHECKLIST.md` lists the remaining external setup.
+
+## Community posts and the UX update
+
+The homepage now has People, Hiring now, and Posts. With no self-published profiles, it opens the post collection so there is useful content immediately. Profiles remain opt-in. In the read-only development preview, post expiry is extended so browser fixtures remain usable; production never extends source-link expiry automatically. The eight bootstrap links (seven people’s posts plus the discussion thread) were explicitly supplied by the organizer; no LinkedIn profiles or comments were scraped. Names and roles are supplied labels, not independently verified availability. An “Added” date is the collection date.
+
+Apply **all** migrations in filename order, including `202610220001_community_posts.sql` and `202610220002_shared_posts.sql` (`supabase db push` handles this for linked projects). They create the posts table, owner-only write policies, report support, retention cleanup, and idempotent source-link inserts. Existing projects should apply only pending migrations. Do not rerun the initial schema manually.
+
+When Supabase is not configured, the same provided links are read from `src/data/shared-posts.json` and still respect their expiry. With Supabase configured, the database is authoritative: errors are shown calmly, and hidden/deleted links are not reintroduced from the file. Apply the migrations to populate the production database; saving repository files does not write to a remote Supabase project.
+
+Share one public link at `/add/post`, or choose **Paste a list** to extract many URLs, review the proposed names/roles, and share up to 50 at once. LinkedIn safety wrappers and tracking parameters are normalized locally. Duplicates are skipped, including when a partial import is retried. Optional metadata is folded away. Manage your own shared links in `/manage`. Posts are public for 30 days and retention cleanup uses the existing daily cron; post links do not receive reminder emails.
+
+See [the quick UX review](docs/PRODUCT_REVIEW.md) for the sources and design decisions, and [post automation](docs/POST_AUTOMATION.md) for what is automated and what needs an approved external integration. Production service credentials remain required for sign-in and writes.

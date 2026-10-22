@@ -2,6 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { supabaseServer } from "@/lib/supabase/server";
 import { LoginForm } from "@/components/login-form";
+import { ManagePostCard } from "@/components/manage-post-card";
+import type { CommunityPost } from "@/lib/posts";
 import { ManageCard } from "@/components/manage-card";
 import { signOut } from "../actions";
 import type { Candidate, Role } from "@/lib/types";
@@ -19,10 +21,15 @@ export default async function Manage({
         <LoginForm next="/manage" />
       </div>
     );
-  const [peopleResult, rolesResult, params] = await Promise.all([
+  const [peopleResult, rolesResult, postsResult, params] = await Promise.all([
     client.from("candidate_profiles").select("*").eq("owner_id", user.id),
     client
       .from("hiring_roles")
+      .select("*")
+      .eq("owner_id", user.id)
+      .order("created_at", { ascending: false }),
+    client
+      .from("community_posts")
       .select("*")
       .eq("owner_id", user.id)
       .order("created_at", { ascending: false }),
@@ -82,6 +89,23 @@ export default async function Manage({
             </Link>
           </div>
         )}
+      </section>
+      <section className="manage-section">
+        <h2>Posts you’ve shared</h2>
+        {postsResult.error ? (
+          <p className="notice">
+            We couldn’t load your shared posts. Please try again shortly.
+          </p>
+        ) : (
+          (postsResult.data as CommunityPost[]).map((post) => (
+            <ManagePostCard key={post.id} post={post} />
+          ))
+        )}
+        <div className="action-row">
+          <Link className="button button-outline" href="/add/post">
+            Share a LinkedIn post →
+          </Link>
+        </div>
       </section>
       <section className="manage-section">
         <h2>Your hiring roles</h2>

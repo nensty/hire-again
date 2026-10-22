@@ -1,6 +1,6 @@
 # Owner-controlled launch actions
 
-- [ ] Create a Supabase project in the appropriate region; apply the repository migration using its SQL editor or authenticated Supabase CLI.
+- [ ] Create a Supabase project in the appropriate region; apply all repository migrations in filename order using its SQL editor or authenticated Supabase CLI.
 - [ ] Copy the project URL, publishable key, and server-only secret key into Vercel environment settings.
 - [ ] Verify a sender domain in Resend, publish its required DNS records, create an API key, and configure `RESEND_API_KEY` and `EMAIL_FROM` in Vercel.
 - [ ] Configure Supabase Auth custom SMTP using Resend; set the production Site URL and the exact `/auth/callback` redirect URL. Add the repository magic-link template to both Magic Link and Confirm Signup templates. Keep email confirmation enabled in production.

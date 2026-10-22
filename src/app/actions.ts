@@ -189,7 +189,7 @@ export async function reportListing(
   const parsed = reportSchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { message: "Choose a reason for your report." };
   if (isDemo())
-    return { message: "Reports are disabled for fictional preview listings." };
+    return { message: "Reports are disabled in the development preview." };
   if (!(await allowAction("report", 5)))
     return {
       message:

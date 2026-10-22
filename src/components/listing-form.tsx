@@ -221,71 +221,90 @@ export function ListingForm({
         </label>
         {choices("regions", "Regions", REGIONS)}
         {choices("work_modes", "Work mode", WORK_MODES)}
-        <h2 className="form-section-title full-width">
-          A little more <span className="hint">· optional</span>
-        </h2>
-        {person ? (
-          <>
-            <label className="checkbox-label full-width">
-              <input
-                name="relocation"
-                type="checkbox"
-                checked={relocation}
-                onChange={(e) => setRelocation(e.target.checked)}
+        <details
+          className="listing-extras full-width"
+          open={
+            Boolean(
+              state.errors &&
+              [
+                "note",
+                "company_website",
+                "contact_linkedin_url",
+                "visa_support",
+                "hiring_post_url",
+                "open_to_work_post_url",
+              ].some((key) => state.errors?.[key]),
+            ) || undefined
+          }
+        >
+          <summary>
+            A little more <span className="hint">(optional)</span>
+          </summary>
+          <div className="form-grid">
+            {person ? (
+              <>
+                <label className="checkbox-label full-width">
+                  <input
+                    name="relocation"
+                    type="checkbox"
+                    checked={relocation}
+                    onChange={(e) => setRelocation(e.target.checked)}
+                  />
+                  I’m open to relocating.
+                </label>
+                <div className="full-width">
+                  {field("open_to_work_post_url", "OpenToWork LinkedIn post", {
+                    optional: true,
+                    url: true,
+                    max: 2048,
+                  })}
+                </div>
+              </>
+            ) : (
+              <>
+                {field("company_website", "Company website", {
+                  optional: true,
+                  url: true,
+                  max: 2048,
+                })}
+                {field("contact_linkedin_url", "Contact LinkedIn", {
+                  optional: true,
+                  url: true,
+                  max: 2048,
+                })}
+                {field("visa_support", "Visa / relocation support", {
+                  optional: true,
+                  max: 160,
+                })}
+                {field("hiring_post_url", "Hiring LinkedIn post", {
+                  optional: true,
+                  url: true,
+                  max: 2048,
+                })}
+              </>
+            )}
+            <label className="field full-width" htmlFor="note">
+              A short note
+              <textarea
+                id="note"
+                name="note"
+                maxLength={240}
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                placeholder={
+                  person
+                    ? "What would you love to work on next?"
+                    : "What should someone know about this opportunity?"
+                }
+                rows={3}
               />
-              I’m open to relocating.
+              <small>{note.length}/240 characters · plain text</small>
+              {state.errors?.note && (
+                <span className="field-error">{state.errors.note[0]}</span>
+              )}
             </label>
-            <div className="full-width">
-              {field("open_to_work_post_url", "OpenToWork LinkedIn post", {
-                optional: true,
-                url: true,
-                max: 2048,
-              })}
-            </div>
-          </>
-        ) : (
-          <>
-            {field("company_website", "Company website", {
-              optional: true,
-              url: true,
-              max: 2048,
-            })}
-            {field("contact_linkedin_url", "Contact LinkedIn", {
-              optional: true,
-              url: true,
-              max: 2048,
-            })}
-            {field("visa_support", "Visa / relocation support", {
-              optional: true,
-              max: 160,
-            })}
-            {field("hiring_post_url", "Hiring LinkedIn post", {
-              optional: true,
-              url: true,
-              max: 2048,
-            })}
-          </>
-        )}
-        <label className="field full-width" htmlFor="note">
-          A short note
-          <textarea
-            id="note"
-            name="note"
-            maxLength={240}
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder={
-              person
-                ? "What would you love to work on next?"
-                : "What should someone know about this opportunity?"
-            }
-            rows={3}
-          />
-          <small>{note.length}/240 characters · plain text</small>
-          {state.errors?.note && (
-            <span className="field-error">{state.errors.note[0]}</span>
-          )}
-        </label>
+          </div>
+        </details>
         <label className="checkbox-label consent full-width">
           <input
             type="checkbox"

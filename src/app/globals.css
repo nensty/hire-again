@@ -1793,3 +1793,311 @@ dialog::backdrop {
     font-size: 29px;
   }
 }
+/* Keep the next useful action and results close together. */
+.hero-compact {
+  padding-top: 35px;
+  padding-bottom: 30px;
+  gap: 45px;
+  align-items: center;
+  grid-template-columns: 1.6fr 1fr;
+}
+.hero-compact:has(.hero-aside:empty) {
+  grid-template-columns: 1fr;
+}
+.hero-compact h1 {
+  font-size: 53px;
+  line-height: 1.12;
+  letter-spacing: -1.8px;
+  margin-top: 16px;
+}
+.hero-compact .hero-description {
+  max-width: 680px;
+  font-size: 16px;
+  margin-top: 14px;
+}
+.hero-compact .hero-actions {
+  margin-top: 18px;
+}
+.hero-compact .hero-small {
+  margin-top: 13px;
+}
+.hero-compact .stats {
+  width: 100%;
+  border-top: 0;
+  padding-top: 0;
+}
+.directory-heading .tabs {
+  gap: 23px;
+}
+.desktop-filter-bar {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 12px;
+}
+.desktop-filter-bar > .filter-select {
+  flex: 0 1 245px;
+}
+.more-filters {
+  flex: 1;
+  min-width: 0;
+}
+.more-filters > summary {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  list-style: none;
+  min-height: 49px;
+  font-size: 12px;
+  color: var(--sage);
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  width: fit-content;
+}
+.more-filters > .desktop-filters {
+  margin-top: 10px;
+}
+.post-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 15px;
+}
+.post-kinds,
+.share-mode {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.post-kinds button,
+.share-mode button {
+  border: 1px solid var(--line);
+  background: transparent;
+  padding: 8px 12px;
+  font-size: 11px;
+  border-radius: 6px;
+  min-height: 36px;
+}
+.post-kinds button[aria-pressed="true"],
+.share-mode button[aria-pressed="true"] {
+  border-color: var(--sage);
+  background: var(--sage-light);
+  color: var(--sage);
+}
+.directory-help {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 15px;
+  max-width: 650px;
+}
+.post-source {
+  font-size: 10px;
+  color: var(--muted);
+}
+.post-card h3 {
+  font-size: 25px;
+}
+.post-note {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.75;
+  margin-top: 14px;
+  overflow-wrap: anywhere;
+}
+.post-date {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: auto;
+  padding-top: 20px;
+  padding-bottom: 15px;
+}
+.post-card .card-footer {
+  margin-top: 0;
+}
+.post-card .report-form {
+  padding: 0 0 12px;
+}
+.post-card .report-form summary {
+  font-size: 10px;
+}
+.post-card .report-form select {
+  display: block;
+}
+.post-form > .field,
+.post-form > .choices,
+.post-form > .post-extra {
+  margin-bottom: 23px;
+}
+.post-extra > summary {
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--sage);
+  padding: 10px 0;
+}
+.post-extra > p {
+  margin: 10px 0 18px;
+}
+.post-extra .form-grid {
+  margin-bottom: 20px;
+}
+.post-extra .form-grid > .field:has(input[name="skills"]) {
+  grid-column: 1/-1;
+}
+.post-delete > form {
+  margin-top: 12px;
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.post-delete button {
+  margin-top: 10px;
+}
+.share-mode {
+  margin-top: 25px;
+}
+.share-mode + .form-panel {
+  margin-top: 17px;
+}
+.import-row {
+  border: 1px solid var(--line);
+  padding: 17px;
+  border-radius: 8px;
+  min-width: 0;
+  margin: 18px 0;
+}
+.import-row > legend {
+  font-size: 12px;
+}
+.import-row > .text-link {
+  margin-bottom: 14px;
+}
+.import-row > .hint {
+  margin-top: 12px;
+}
+.import-row .form-grid {
+  gap: 12px;
+}
+@media (max-width: 800px) {
+  .hero-compact {
+    grid-template-columns: 1fr;
+    padding-top: 29px;
+    padding-bottom: 25px;
+    gap: 22px;
+  }
+  .hero-compact .hero-aside {
+    max-width: none;
+    margin: 0;
+  }
+  .hero-compact h1 {
+    font-size: 48px;
+  }
+  .hero-compact .stats {
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+  }
+  .desktop-filter-bar {
+    display: none;
+  }
+  .post-toolbar {
+    align-items: flex-start;
+  }
+  .post-toolbar > .text-link {
+    white-space: nowrap;
+    padding-top: 7px;
+    font-size: 12px;
+    gap: 6px;
+  }
+}
+@media (max-width: 560px) {
+  .hero-compact h1 {
+    font-size: 41px;
+    letter-spacing: -1.2px;
+  }
+  .hero-compact .hero-description {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .hero-compact .hero-actions .button {
+    padding: 11px 16px;
+  }
+  .hero-compact .hero-small {
+    line-height: 1.9;
+    font-size: 9px;
+  }
+  .directory-heading .tabs {
+    gap: 22px;
+  }
+  .tabs button {
+    font-size: 14px;
+    gap: 6px;
+  }
+  .post-toolbar {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .post-kinds {
+    gap: 6px;
+  }
+  .post-kinds button {
+    padding: 7px 9px;
+    font-size: 10px;
+    min-height: 35px;
+  }
+  .post-toolbar > .text-link {
+    align-self: flex-end;
+  }
+  .post-note {
+    font-size: 13px;
+  }
+  .post-date {
+    font-size: 11px;
+  }
+  .import-row {
+    padding: 14px;
+  }
+}
+.listing-extras {
+  border-top: 1px solid var(--line);
+  padding-top: 15px;
+}
+.listing-extras > summary {
+  cursor: pointer;
+  font: 22px/1.4 var(--serif);
+  padding: 5px 0;
+}
+.listing-extras > .form-grid {
+  margin-top: 20px;
+}
+.choice-options input[type="radio"] {
+  accent-color: var(--sage);
+}
+.more-filters .filter-details:last-child .filter-popover {
+  left: auto;
+  right: 0;
+}
+.post-desktop-function {
+  display: flex;
+  flex: 0 0 220px;
+  height: 49px;
+}
+.post-desktop-function .filter-select {
+  width: 100%;
+}
+.mobile-filter.posts-filter {
+  display: inline-flex;
+}
+.directory-posts .post-toolbar {
+  margin-top: 13px;
+}
+.directory-posts .results-meta {
+  padding-top: 18px;
+  padding-bottom: 14px;
+}
+@media (max-width: 800px) {
+  .post-desktop-function {
+    display: none;
+  }
+}

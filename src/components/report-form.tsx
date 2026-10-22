@@ -3,7 +3,13 @@ import { useActionState } from "react";
 import { reportListing } from "@/app/actions";
 import { initialState } from "@/lib/action-types";
 import type { EntityType } from "@/lib/constants";
-export function ReportForm({ kind, id }: { kind: EntityType; id: string }) {
+export function ReportForm({
+  kind,
+  id,
+}: {
+  kind: EntityType | "post";
+  id: string;
+}) {
   const [state, action, pending] = useActionState(reportListing, initialState);
   return (
     <details className="report-form">
@@ -11,10 +17,10 @@ export function ReportForm({ kind, id }: { kind: EntityType; id: string }) {
       <form action={action}>
         <input type="hidden" name="entity_type" value={kind} />
         <input type="hidden" name="entity_id" value={id} />
-        <label className="sr-only" htmlFor="report-reason">
+        <label className="sr-only" htmlFor={`report-reason-${kind}-${id}`}>
           Reason for reporting
         </label>
-        <select id="report-reason" name="reason" required>
+        <select id={`report-reason-${kind}-${id}`} name="reason" required>
           <option value="">Choose a reason</option>
           {[
             "Outdated or filled",

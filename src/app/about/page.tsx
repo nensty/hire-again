@@ -26,6 +26,14 @@ export default function About() {
         deserves to be seen. Just a directory of people and roles, with a few
         simple suggestions to help you find a fit.
       </p>
+      <h2>Good posts, easy to find.</h2>
+      <p>
+        The community can also share links to public LinkedIn posts. Search by
+        name, role, or skill, then open the original to read the latest
+        information. A shared post is a source link, not a candidate profile or
+        a claim that someone is still looking. Names and role labels come from
+        the person sharing the link, and are not independently verified.
+      </p>
       <h2>Yours to manage.</h2>
       <p>
         Listings stay public for 30 days. Renew when you need more time, hide
@@ -43,7 +51,7 @@ export default function About() {
         PandaDoc.
       </p>
       <div className="action-row">
-        <Link href="/#directory" className="button">
+        <Link href="/?view=people#directory" className="button">
           Meet the people →
         </Link>
         <Link href="/add/role" className="button button-outline">
