@@ -1,51 +1,32 @@
-# Quick product and UX review — 22 October 2026
+# Product focus and UX review — 22 October 2026
 
-Scope: the implemented product, the organizer's lost-post task, official interaction patterns, and browser checks. This is a heuristic review, not interviews or a claim of measured conversion improvement.
+## The value
 
-## Main task
+Help someone find a person from the PandaDoc community and reach their original post, without searching through a noisy feed. The organizer's concrete task is: “I saw my engineering-manager colleague's post, lost it, and spent half an hour finding it again.”
 
-“I saw someone useful. Help me find their post again, then connect on the original source.”
+The main path is **search → recognize the person → open their post or profile → reach out**. The contribution path is **Add someone → name, optional role, public post link → publish**. It is a searchable introduction list. Profiles and shared posts are data sources within that list.
 
-Secondary tasks: find a person to hire, find a role, and publish my own profile. A post collection and an opt-in profile directory meet different needs and must remain visibly distinct.
+## Product decisions
 
-## Redesign after organizer feedback
+- One list, one search, one primary contribution action. Remove the Explore sidebar, three category choices, zero counters, post-kind chips, and advanced-filter drawer from the main experience. Show a Specialty selector alongside search at every width.
+- Include active owner-published profiles and active looking-for-work posts in the same results. Label the source within each entry, with “Read on LinkedIn” or “View profile” as appropriate. A shared post never creates a candidate profile or verifies current availability.
+- Collapse duplicate references only when an active profile explicitly references the same normalized post URL and the names match. Never merge identities by name alone. Hidden/expired profiles must not suppress public posts. Count results rather than assert a verified count of unique people.
+- Keep discussions and hiring posts under secondary related links. Existing job and management routes stay functional, but job-board navigation does not compete with finding a person.
+- Ask for a person's name and post link when adding someone; keep the role visible and optional. Additional skills/notes are disclosed on demand. New single-person submissions default to looking-for-work without another classification step. Pasted lists retain review and correction before publishing.
+- Guest link sharing remains available with the existing server-only quota, validation, duplicate checks, honeypot, explicit public-post confirmation, and 30-day expiry. Sign-in before sharing enables owner management. Guest corrections/removal use reporting. Profile publishing and management remain authenticated.
+- Do not show fictional example profiles in an empty production list. Keep fictional fixtures in the clearly labeled development preview.
 
-The organizer found that everything looked the same and the purpose was unclear. The redesign separates three types of content in both wording and layout:
+Assumption: helping hiring managers and colleagues find people is the primary value. This is product judgment based on organizer feedback and a concrete task; it is not an interview study or a measured conversion improvement.
 
-- **Shared posts**: a compact directory of names and roles, with a focus column and an explicit “Read on LinkedIn” action. A community discussion has its own label and background. Initials are typographic navigation aids, not imported photos or endorsements.
-- **Profiles**: fuller cards for profiles published by their owners, including experience, location, skills, and a profile action.
-- **Hiring now**: a vacancy list with job title, company, work arrangement, and a role action.
+## Sources consulted
 
-Desktop uses a persistent navigation column; mobile uses three compact view buttons. Each view explains its source and offers one relevant contribution action. Search, Function, and Filters share one predictable control area; detailed filters open in the same accessible dialog at every size. The hero states the hiring task instead of repeating all navigation actions and counts. Empty profiles link to available shared posts while preserving the clearly fictional example requested earlier.
+- GOV.UK Design System, [Question pages](https://design-system.service.gov.uk/patterns/question-pages/), accessed via its [official source](https://raw.githubusercontent.com/alphagov/govuk-design-system/main/src/patterns/question-pages/index.md): ask only for information needed, label optional fields, preserve answers, and provide a clear action.
+- GOV.UK Design System, [Details](https://design-system.service.gov.uk/components/details/), accessed via its [official source](https://raw.githubusercontent.com/alphagov/govuk-design-system/main/src/components/details/index.md): reveal secondary information on demand and keep essential information visible.
 
-Assumption: finding someone and reaching their original source is the primary task. This is a design judgment based on the organizer’s lost-post example, not a measured usability result. Existing consent, provenance, expiry, ownership, and publication rules are retained.
+LinkedIn, Nielsen Norman Group pages, and the GOV.UK website were blocked by the environment's egress policy. No LinkedIn comments were fetched and no external competitor or user-research findings are claimed. The seven names/roles/post links and one discussion were organizer-provided.
 
-## Earlier improvements retained
+## Validation
 
-- Put content higher on the page. Remove the decorative quotation and duplicated introduction; keep a compact product promise and direct actions.
-- Start with useful content. When there are no profiles, open the available community posts; explicit Profiles/Shared posts/Hiring choices always work and stay in the URL. No invented people counts.
-- Show search and Function first. Reveal more detailed filters only when needed, with the filter sheet retained. Keep post-type choices visible and hide irrelevant geography/seniority filters for posts.
-- Let people recognize names, roles, and skills in the results. One primary post action opens the original LinkedIn post. “Added” dates describe collection activity, never a fabricated original publication date.
-- One URL is enough to share a post. Put optional metadata behind a clearly labeled disclosure. Keep accuracy confirmation visible. No automatic profile creation.
-- Paste one copied list instead of opening seven forms. Extract and normalize links locally, skip duplicates, suggest only tags supported by the pasted role, and show a review before publishing. Unknown information remains blank.
-- Keep optional profile/role fields folded while required fields and publication consent stay visible. Show validation errors without losing entered values.
-- Link management belongs beside existing listings. Edit/hide/renew/delete is owner-only; no approval queue or separate admin product.
+Find Aleksandra by name or engineering-manager role from the homepage, without choosing a data source. Search a skill across profiles and posts. Follow the original link. Open a filtered URL after reload. Confirm legacy People/Posts links open the same list. Add a person without login, or paste a list and correct it before publishing. Check hidden/expired visibility, explicit-source deduplication, owner-only writes, and guest quotas independently of the UI. Check keyboard access, automated WCAG AA, and overflow at 375/430/768/1440px.
 
-## Sources actually consulted
-
-- GOV.UK Design System, [Question pages](https://design-system.service.gov.uk/patterns/question-pages/), accessed via its [official source](https://raw.githubusercontent.com/alphagov/govuk-design-system/main/src/patterns/question-pages/index.md): ask only for information needed, label optional fields, preserve previous answers, provide a clear action, and avoid unnecessary progress indicators.
-- GOV.UK Design System, [Details](https://design-system.service.gov.uk/components/details/), accessed via its [official source](https://raw.githubusercontent.com/alphagov/govuk-design-system/main/src/components/details/index.md): disclose secondary information when needed; do not hide information most users need.
-
-Direct access to LinkedIn, Nielsen Norman Group pages, and the GOV.UK website was blocked by this environment's egress policy. No LinkedIn comments were fetched directly and no competitor/user-research findings are claimed. The supplied seven names, roles, and post links are organizer-provided; the eighth link is the organizer's shared discussion. The data migrations and source file record that provenance.
-
-## Small validation tasks
-
-Find Aleksandra's engineering-manager post by name or role; find Python roles/posts; switch between Profiles, Hiring now, and Shared posts; open a shareable filtered URL; paste a list, review it, and remove a mistaken entry; use the product at 375/430/768/1440px with keyboard and accessible labels. Verify public/owner-only/expired SQL policies independently of the UI.
-
-Success to measure with real users later: can a hiring manager find a relevant post in under two minutes, and can a contributor share a link without explanation? Do not add tracking or claim that this target has been proven by the automated tests.
-
-## Follow-up: reduce contribution friction
-
-The organizer encountered a sign-in wall when trying to share a public post. New post submissions now allow guests, while profiles, roles, and editing remain authenticated. Guests get five links per hour through a server-only write path, an atomic database quota, input validation, a honeypot, and duplicate handling. An optional sign-in link explains the benefit: managing the post later. Guest submissions are ownerless and cannot be claimed by an unrelated account. The success receipt and privacy page explain reporting for corrections/removal. No moderation queue or new identity provider was introduced.
-
-The About page's general link color overrode filled-button text. Its text-link selector now excludes buttons, preserving readable labels in default and hover states.
+A useful next test with real people: can someone explain the page's purpose and find a relevant person in under two minutes? Automated checks do not establish that outcome. Avoid expanding navigation until actual usage shows a second important task.

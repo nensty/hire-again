@@ -29,7 +29,7 @@ export function SharePost({
         aria-label="Share one post or a list"
       >
         <button aria-pressed={!bulk} onClick={() => setBulk(false)}>
-          One post
+          One person
         </button>
         <button aria-pressed={bulk} onClick={() => setBulk(true)}>
           Paste a list
@@ -180,6 +180,7 @@ function BulkPostForm({
                 Person / team name
                 <input
                   value={post.author_name}
+                  required={post.kind === "looking"}
                   onChange={(e) => update(i, "author_name", e.target.value)}
                   maxLength={100}
                 />

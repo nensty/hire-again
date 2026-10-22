@@ -4,53 +4,54 @@ test("find the supplied engineering manager post in seconds and preserve a share
   page,
 }) => {
   await page.goto("/?view=posts");
-  await expect(
-    page.getByRole("button", { name: "Shared posts 8", exact: true }),
-  ).toHaveAttribute("aria-pressed", "true");
-  await expect(page.locator(".post-card")).toHaveCount(8);
+  await expect(page.locator(".person-result")).toHaveCount(13);
+  await expect(page.getByRole("group", { name: "Directory view" })).toHaveCount(
+    0,
+  );
   await page.getByRole("searchbox").fill("Aleksandra manager");
-  await expect(page.locator(".post-card")).toHaveCount(1);
+  await expect(page.locator(".person-result")).toHaveCount(1);
   await expect(
-    page.locator(".post-card").getByRole("link", { name: "Read on LinkedIn" }),
+    page
+      .locator(".person-result")
+      .getByRole("link", { name: "Read on LinkedIn" }),
   ).toHaveAttribute("href", "https://lnkd.in/p/dft8SFe5");
-  await expect(page).toHaveURL(/view=posts.*q=Aleksandra/);
+  await expect(page).toHaveURL(/q=Aleksandra/);
   await page.reload();
   await expect(page.getByRole("searchbox")).toHaveValue("Aleksandra manager");
-  await expect(page.locator(".post-card")).toHaveCount(1);
+  await expect(page.locator(".person-result")).toHaveCount(1);
   await page
     .getByRole("button", { name: "Clear filters", exact: true })
     .click();
-  await page
-    .getByRole("button", { name: "Looking for work", exact: true })
-    .click();
-  await expect(page.locator(".post-card")).toHaveCount(7);
-  await page.getByRole("button", { name: "Community", exact: true }).click();
-  await expect(page.locator(".post-card")).toHaveCount(1);
-  await expect(page.locator(".post-card a").first()).toHaveAttribute(
-    "href",
-    "https://lnkd.in/p/dc8K-GpP",
-  );
+  await expect(page.locator(".person-result")).toHaveCount(13);
+  await page.getByText("Related community links", { exact: true }).click();
+  await expect(
+    page.getByRole("link", { name: "Shared LinkedIn discussion" }),
+  ).toHaveAttribute("href", "https://lnkd.in/p/dc8K-GpP");
 });
-test("shows simple filters first and reveals only relevant post filters", async ({
+test("one search finds both shared posts and self-published profiles", async ({
   page,
 }) => {
-  await page.goto("/?view=posts");
+  await page.goto("/");
   await page
-    .getByRole("combobox", { name: "Function", exact: true })
+    .getByRole("combobox", { name: "Specialty", exact: true })
     .selectOption("qa-automation");
-  await expect(page.locator(".post-card")).toHaveCount(2);
-  await expect(page.getByLabel("Seniority", { exact: true })).toHaveCount(0);
-  await page.getByRole("button", { name: "Filters", exact: true }).click();
+  await expect(page.locator(".person-result")).toHaveCount(3);
+  await page.getByRole("searchbox").fill("SDET");
+  await expect(page.locator(".person-result")).toHaveCount(1);
+  await expect(page.locator(".person-result")).toContainText(
+    "Dmitry Zakutalin",
+  );
   await page
-    .getByRole("dialog")
-    .getByLabel("Skills", { exact: true })
-    .fill("SDET");
-  await page
-    .getByRole("dialog")
-    .getByRole("button", { name: /Show 1 result/ })
+    .getByRole("button", { name: "Clear filters", exact: true })
     .click();
-  await expect(page.locator(".post-card")).toHaveCount(1);
-  await expect(page.locator(".post-card")).toContainText("Dmitry Zakutalin");
+  await page.getByRole("searchbox").fill("Alex Morgan");
+  await expect(page.locator(".person-result")).toHaveCount(1);
+  await expect(page.locator(".person-result")).toContainText(
+    "Added by this person",
+  );
+  await expect(
+    page.getByRole("link", { name: "View profile", exact: true }),
+  ).toHaveAttribute("href", "/people/alex-morgan-demo");
 });
 test("paste a list, review names and roles, and remove a mistaken entry before sharing", async ({
   page,
@@ -63,6 +64,10 @@ test("paste a list, review names and roles, and remove a mistaken entry before s
   await expect(
     page.getByLabel("LinkedIn post link", { exact: false }),
   ).toBeVisible();
+  await expect(page.getByLabel("Person’s name", { exact: true })).toBeVisible();
+  await expect(
+    page.getByLabel("Person’s name", { exact: true }),
+  ).toHaveAttribute("required", "");
   await page.getByRole("button", { name: "Paste a list", exact: true }).click();
   await page
     .getByLabel("Posts or comments")
@@ -93,7 +98,7 @@ for (const width of [375, 430, 768, 1440])
   test(`posts are readable and accessible at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 950 });
     await page.goto("/?view=posts");
-    await expect(page.locator(".post-card")).toHaveCount(8);
+    await expect(page.locator(".person-result")).toHaveCount(13);
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,

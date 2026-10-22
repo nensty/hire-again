@@ -6,42 +6,45 @@ test("people search and shareable filters work without reloading", async ({
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "Find your next",
+    "Good people.",
   );
   await expect(
-    page.getByText("All people and teams below are fictional.", {
+    page.getByText("Self-published profiles and hiring teams are fictional.", {
       exact: false,
     }),
   ).toBeVisible();
-  await expect(page.locator(".listing-card")).toHaveCount(6);
+  await expect(page.locator(".person-result")).toHaveCount(13);
   await page.getByRole("searchbox").fill("typescript");
-  await expect(page.locator(".listing-card")).toHaveCount(2);
+  await expect(page.locator(".person-result")).toHaveCount(2);
   await expect(page).toHaveURL(/q=typescript/);
   await page.reload();
   await expect(page.getByRole("searchbox")).toHaveValue("typescript");
-  await expect(page.locator(".listing-card")).toHaveCount(2);
+  await expect(page.locator(".person-result")).toHaveCount(2);
   await page
     .getByRole("button", { name: "Clear filters", exact: true })
     .click();
-  await expect(page.locator(".listing-card")).toHaveCount(6);
-  await page.getByRole("button", { name: "Hiring now 3" }).click();
-  await expect(page.locator(".listing-card")).toHaveCount(3);
-  await expect(page).toHaveURL(/view=roles/);
+  await expect(page.locator(".person-result")).toHaveCount(13);
   await page.getByRole("searchbox").fill("nothing like this");
   await expect(page.getByText("No matches just yet.")).toBeVisible();
   expect(errors).toEqual([]);
 });
-test("header navigation switches directory views and profile recommendations work", async ({
+test("simple people navigation and existing profile recommendations work", async ({
   page,
 }) => {
   await page.goto("/");
+  await expect(page.getByRole("group", { name: "Directory view" })).toHaveCount(
+    0,
+  );
+  await expect(
+    page.getByRole("link", { name: "Hiring now", exact: true }),
+  ).toHaveCount(0);
+  await page.goto("/?view=roles");
+  await expect(page.locator(".role-card")).toHaveCount(3);
   await page
     .getByRole("navigation", { name: "Main navigation" })
-    .getByRole("link", { name: "Hiring now" })
+    .getByRole("link", { name: "Find people" })
     .click();
-  await expect(
-    page.getByRole("button", { name: "Hiring now 3" }),
-  ).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".person-result")).toHaveCount(13);
   await page.goto("/people/alex-morgan-demo");
   await expect(
     page.getByRole("heading", { name: "Alex Morgan", exact: true }),
@@ -131,27 +134,20 @@ for (const width of [375, 430, 768, 1440])
         () => document.documentElement.scrollWidth <= window.innerWidth,
       ),
     ).toBe(true);
-    if (width <= 768) {
-      await page.getByRole("button", { name: "Filters", exact: true }).click();
-      await expect(page.getByRole("dialog")).toBeVisible();
-      await page
-        .getByRole("dialog")
-        .getByText("Region", { exact: false })
-        .first()
-        .click();
-      await page
-        .getByRole("dialog")
-        .getByLabel("Europe", { exact: true })
-        .check();
-      await page.keyboard.press("Escape");
-      await expect(page.getByRole("dialog")).toHaveCount(0);
-      await expect(page).toHaveURL(/region=europe/);
-    }
+    await page
+      .getByRole("combobox", { name: "Specialty" })
+      .selectOption("qa-automation");
+    await expect(page.locator(".person-result")).toHaveCount(3);
+    await expect(page).toHaveURL(/function=qa-automation/);
+    await page.reload();
+    await expect(page.getByRole("combobox", { name: "Specialty" })).toHaveValue(
+      "qa-automation",
+    );
     await page.screenshot({
       path: `test-results/directory-${width}.png`,
       fullPage: true,
     });
-    await page.getByRole("button", { name: "Hiring now 3" }).click();
+    await page.goto("/?view=roles");
     await expect(
       page.getByRole("heading", { name: "Find your next team." }),
     ).toBeVisible();

@@ -2,7 +2,7 @@
 
 Implemented now:
 
-1. Paste one post link or a list of comments/introductions into Share a post.
+1. Paste one post link or a list of comments/introductions into Add someone.
 2. The app locally extracts URLs, unwraps LinkedIn safety links, removes tracking parameters, deduplicates links, and proposes tags from the role text supplied alongside each link.
 3. Review names and roles, remove unwanted entries, and share the list. Signed-in submissions use Supabase Auth and owner-only RLS. Guests can share up to five links per hour through a server-only, rate-limited path; guest records have no owner and cannot be claimed afterward. Anonymous database inserts remain blocked. Retrying safely skips links already in the collection.
 

@@ -17,26 +17,28 @@ export default async function Home({
     if (Array.isArray(v)) v.forEach((s) => query.append(k, s));
     else if (v) query.set(k, v);
   });
-  if (!params.view && !data.people.length && postData.posts.length)
-    query.set("view", "posts");
+  const rolesView = query.get("view") === "roles";
   return (
     <>
-      <section
-        className="discovery-intro container"
-        aria-labelledby="home-title"
-      >
-        <div>
-          <p className="eyebrow">THE PANDADOC COMMUNITY, CONNECTED</p>
-          <h1 id="home-title">
-            Find your next
-            <br />
-            <em>great teammate.</em>
-          </h1>
-        </div>
-        <p className="discovery-intro-copy">
-          Good people get lost in the feed. <br />
-          Find their posts, explore their experience, and help them find what’s
-          next.
+      <section className="people-intro container" aria-labelledby="home-title">
+        <p className="eyebrow">PEOPLE I’D HIRE AGAIN · PANDADOC COMMUNITY</p>
+        <h1 id="home-title">
+          {rolesView ? (
+            <>
+              Find your <em>next team.</em>
+            </>
+          ) : (
+            <>
+              Good people.
+              <br />
+              <em>Easy to find.</em>
+            </>
+          )}
+        </h1>
+        <p>
+          {rolesView
+            ? "Opportunities shared by teams in the community."
+            : "Find people from the PandaDoc community by name, role, or skill. Open their post or profile and start a conversation."}
         </p>
       </section>
       <Directory

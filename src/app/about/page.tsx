@@ -14,17 +14,17 @@ export default function About() {
         initiative for current and former PandaDoc people and teams who would
         love to hire them.
       </p>
-      <h2>A small space. A useful connection.</h2>
+      <h2>Find the person you lost in the feed.</h2>
       <p>
         Sometimes finding your next team starts with someone saying, “You should
         meet this person.” This is a place to make those introductions a little
         easier.
       </p>
       <p>
-        People publish their own profiles. Hiring teams share their own
-        opportunities. No scraping, no rankings, no algorithms deciding who
-        deserves to be seen. Just a directory of people and roles, with a few
-        simple suggestions to help you find a fit.
+        Search one list by name, role, or skill, then open a person’s original
+        post or profile to start a conversation. People can add their own
+        profile, or share someone’s public job-search post. Both appear in the
+        same list, with the source labeled on each entry.
       </p>
       <h2>Good posts, easy to find.</h2>
       <p>
@@ -57,8 +57,8 @@ export default function About() {
         <Link href="/?view=people#directory" className="button">
           Meet the people →
         </Link>
-        <Link href="/add/role" className="button button-outline">
-          We’re hiring
+        <Link href="/add/post" className="button button-outline">
+          Add someone
         </Link>
       </div>
     </article>

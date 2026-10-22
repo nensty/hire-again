@@ -27,17 +27,18 @@ export function PostForm({
     function: post?.function || "",
     skills: post?.skills.join(", ") || "",
     note: post?.note || "",
-    kind: post?.kind || "community",
+    kind: post?.kind || "looking",
   });
   const [confirmed, setConfirmed] = useState(false);
-  function input(name: string, label: string, max = 140) {
+  function input(name: string, label: string, max = 140, required = false) {
     return (
       <label className="field">
         <span>
-          {label} <small>(optional)</small>
+          {label} {!required && <small>(optional)</small>}
         </span>
         <input
           name={name}
+          required={required}
           value={values[name]}
           onChange={(e) => setValues((v) => ({ ...v, [name]: e.target.value }))}
           maxLength={max}
@@ -60,6 +61,10 @@ export function PostForm({
           {state.message}
         </p>
       )}
+      <div className="form-grid post-identity-fields">
+        {input("author_name", "Person’s name", 100, values.kind === "looking")}
+        {input("role_label", "Role", 120)}
+      </div>
       <label className="field">
         LinkedIn post link
         <input
@@ -80,47 +85,51 @@ export function PostForm({
           <span className="field-error">{state.errors.url[0]}</span>
         )}
       </label>
-      <fieldset className="choices">
-        <legend>What kind of post is it?</legend>
-        <div className="choice-options">
-          {Object.entries(POST_KINDS).map(([kind, label]) => (
-            <label key={kind}>
-              <input
-                type="radio"
-                name="kind"
-                value={kind}
-                checked={values.kind === kind}
-                onChange={() => setValues((v) => ({ ...v, kind }))}
-              />
-              {label}
-            </label>
-          ))}
-        </div>
-      </fieldset>
+      {!post && <input type="hidden" name="kind" value="looking" />}
       <details
         className="post-extra"
         open={
           Boolean(
             state.errors &&
             Object.keys(state.errors).some(
-              (k) => !["url", "confirmation"].includes(k),
+              (k) =>
+                !["url", "confirmation", "author_name", "role_label"].includes(
+                  k,
+                ),
             ),
           ) || undefined
         }
       >
         <summary>
-          Add a name, role, or skills <span className="hint">(optional)</span>
+          Add skills or a note <span className="hint">(optional)</span>
         </summary>
         <p className="hint">
           Use only details the person chose to share publicly. These help people
           find the right post.
         </p>
+        {post && (
+          <fieldset className="choices">
+            <legend>What kind of post is it?</legend>
+            <div className="choice-options">
+              {Object.entries(POST_KINDS).map(([kind, label]) => (
+                <label key={kind}>
+                  <input
+                    type="radio"
+                    name="kind"
+                    value={kind}
+                    checked={values.kind === kind}
+                    onChange={() => setValues((v) => ({ ...v, kind }))}
+                  />
+                  {label}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
         <div className="form-grid">
           {input("title", "Short title")}
-          {input("author_name", "Person / team name", 100)}
-          {input("role_label", "Role", 120)}
           <label className="field">
-            Function <small>(optional)</small>
+            Specialty <small>(optional)</small>
             <select
               name="function"
               value={values.function}
@@ -161,14 +170,16 @@ export function PostForm({
           checked={confirmed}
           onChange={(e) => setConfirmed(e.target.checked)}
         />
-        This is a publicly shared post, and the details above are accurate.
+        {values.kind === "looking"
+          ? "This is their public job-search post, and the details above are accurate."
+          : "This is a publicly shared post, and the details above are accurate."}
       </label>
       {state.errors?.confirmation && (
         <p className="field-error">{state.errors.confirmation[0]}</p>
       )}
       <div className="form-footer">
         <button className="button" disabled={demo || pending}>
-          {pending ? "Saving…" : post ? "Save changes" : "Share post"}
+          {pending ? "Saving…" : post ? "Save changes" : "Add someone"}
           <Icon name="arrow" />
         </button>
         <p>

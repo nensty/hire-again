@@ -64,46 +64,51 @@ const optional = (max: number) =>
     .max(max)
     .nullish()
     .transform((v) => v || null);
-export const postSchema = z.object({
-  url: z
-    .string()
-    .trim()
-    .max(2048)
-    .transform((value, ctx) => {
-      try {
-        return normalizePostUrl(value);
-      } catch {
-        ctx.addIssue({
-          code: "custom",
-          message: "Use a LinkedIn post link or lnkd.in share link.",
-        });
-        return z.NEVER;
-      }
+export const postSchema = z
+  .object({
+    url: z
+      .string()
+      .trim()
+      .max(2048)
+      .transform((value, ctx) => {
+        try {
+          return normalizePostUrl(value);
+        } catch {
+          ctx.addIssue({
+            code: "custom",
+            message: "Use a LinkedIn post link or lnkd.in share link.",
+          });
+          return z.NEVER;
+        }
+      }),
+    title: z
+      .string()
+      .trim()
+      .max(140)
+      .optional()
+      .transform((v) => v || "Shared LinkedIn post"),
+    author_name: optional(100),
+    role_label: optional(120),
+    function: z
+      .union([z.enum(FUNCTIONS), z.literal("")])
+      .optional()
+      .transform((v) => v || null),
+    skills: z
+      .array(z.string().trim().min(1).max(40))
+      .max(5, "Use up to 5 skills.")
+      .transform((v) => [
+        ...new Map(v.map((s) => [s.toLowerCase(), s])).values(),
+      ]),
+    kind: z.enum(["looking", "hiring", "community"]),
+    note: optional(240),
+    confirmation: z.literal(true, {
+      error: "Please confirm this is a publicly shared post.",
     }),
-  title: z
-    .string()
-    .trim()
-    .max(140)
-    .optional()
-    .transform((v) => v || "Shared LinkedIn post"),
-  author_name: optional(100),
-  role_label: optional(120),
-  function: z
-    .union([z.enum(FUNCTIONS), z.literal("")])
-    .optional()
-    .transform((v) => v || null),
-  skills: z
-    .array(z.string().trim().min(1).max(40))
-    .max(5, "Use up to 5 skills.")
-    .transform((v) => [
-      ...new Map(v.map((s) => [s.toLowerCase(), s])).values(),
-    ]),
-  kind: z.enum(["looking", "hiring", "community"]),
-  note: optional(240),
-  confirmation: z.literal(true, {
-    error: "Please confirm this is a publicly shared post.",
-  }),
-});
+  })
+  .refine((post) => post.kind !== "looking" || Boolean(post.author_name), {
+    path: ["author_name"],
+    message: "Add the person’s name so others can find them.",
+  });
 export function filterPosts(
   posts: CommunityPost[],
   filters: { q: string; function: string; skills: string; postType: string },

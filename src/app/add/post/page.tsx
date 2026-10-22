@@ -7,7 +7,7 @@ import { LoginForm } from "@/components/login-form";
 import { SharePost } from "@/components/share-post";
 import { PostForm } from "@/components/post-form";
 import type { CommunityPost } from "@/lib/posts";
-export const metadata = { title: "Share a LinkedIn post" };
+export const metadata = { title: "Add someone" };
 export default async function AddPost({
   searchParams,
 }: {
@@ -22,7 +22,7 @@ export default async function AddPost({
     return (
       <div className="container narrow page-content">
         <Link className="back-link" href="/?view=posts#directory">
-          ← Back to posts
+          ← Back to people
         </Link>
         <LoginForm next={`/add/post${edit ? `?edit=${edit}` : ""}`} />
       </div>
@@ -44,18 +44,20 @@ export default async function AddPost({
         href={edit ? "/manage" : "/?view=posts#directory"}
         className="back-link"
       >
-        ← {edit ? "Back to your posts" : "Back to posts"}
+        ← {edit ? "Back to your posts" : "Back to people"}
       </Link>
-      <span className="eyebrow">KEEP A GOOD CONNECTION FINDABLE</span>
-      <h1>
-        {edit
-          ? "Update your shared post."
-          : "A good post deserves to be found."}
-      </h1>
+      <span className="eyebrow">ADD SOMEONE TO THE LIST</span>
+      <h1>{edit ? "Update your shared post." : "Help someone get found."}</h1>
       <p className="page-intro">
-        Paste a public LinkedIn post. People can find it here and read the
-        original on LinkedIn. This shares a link, not a candidate profile.
+        Add their name and public job-search post. A role or skill helps the
+        right team find them.
       </p>
+      {!edit && (
+        <p className="post-self-link">
+          Adding yourself?{" "}
+          <Link href="/add/person">Create your own profile</Link>.
+        </p>
+      )}
       {!user && !edit && (
         <p className="guest-sharing-note">
           No account needed.{" "}

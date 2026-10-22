@@ -20,17 +20,13 @@ export function Header() {
           </span>
         </Link>
         <nav aria-label="Main navigation">
-          <Link href="/?view=people#directory">Profiles</Link>
-          <Link href="/?view=roles#directory">Hiring now</Link>
-          <Link href="/?view=posts#directory">Shared posts</Link>
-          <Link href="/manage" className="nav-manage">
-            Manage listing
-          </Link>
+          <Link href="/#directory">Find people</Link>
+          <Link href="/about">About</Link>
         </nav>
         <MobileNav />
-        <Link className="button button-small" href="/add/person">
+        <Link className="button button-small" href="/add/post">
           <Icon name="plus" />
-          Add yourself
+          Add someone
         </Link>
       </div>
     </header>
@@ -46,6 +42,7 @@ export function Footer() {
         <nav aria-label="Footer">
           <Link href="/about">About</Link>
           <Link href="/privacy">Privacy</Link>
+          <Link href="/manage">Manage your posts</Link>
         </nav>
       </div>
       <p className="fine-print">

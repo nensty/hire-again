@@ -158,7 +158,7 @@ export async function importPosts(
   if (!parsed.success)
     return {
       message:
-        "Some details need a quick check. Keep each name under 100 characters, role under 120, and use up to five skills.",
+        "Some details need a quick check. Looking-for-work posts need a person’s name. Keep names under 100 characters, roles under 120, and use up to five skills.",
     };
   const client = await supabaseServer();
   if (!client)

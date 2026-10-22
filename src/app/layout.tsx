@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: "%s · People I’d Hire Again",
   },
   description:
-    "Great people from PandaDoc looking for their next team — and teams looking for them.",
+    "Find people from the PandaDoc community by name, role, or skill. Open their original post or profile and start a conversation.",
   robots: { index: false, follow: false },
   openGraph: {
     type: "website",
