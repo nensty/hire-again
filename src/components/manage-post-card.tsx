@@ -2,13 +2,21 @@ import Link from "next/link";
 import { changePost } from "@/app/posts/actions";
 import { isPublic } from "@/lib/expiry";
 import type { CommunityPost } from "@/lib/posts";
-export function ManagePostCard({ post }: { post: CommunityPost }) {
+export function ManagePostCard({
+  post,
+  paused = false,
+}: {
+  post: CommunityPost;
+  paused?: boolean;
+}) {
   const visible = isPublic(post);
   const status =
     post.status === "active" && !visible
       ? "Expired"
       : post.status === "active"
-        ? "Public"
+        ? paused
+          ? "Publication paused"
+          : "Public"
         : post.status === "hidden"
           ? "Hidden"
           : "Closed";
@@ -38,19 +46,23 @@ export function ManagePostCard({ post }: { post: CommunityPost }) {
         >
           Read original
         </a>
-        <Link
-          className="button button-outline"
-          href={`/add/post?edit=${post.id}`}
-        >
-          Edit
-        </Link>
+        {!paused && (
+          <>
+            <Link
+              className="button button-outline"
+              href={`/add/post?edit=${post.id}`}
+            >
+              Edit
+            </Link>
+          </>
+        )}
         <form action={changePost}>
-          {fields(visible ? "hide" : "show")}
+          {fields(paused || visible ? "hide" : "show")}
           <button className="button button-outline">
-            {visible ? "Hide" : "Show for 30 days"}
+            {paused || visible ? "Hide" : "Show for 30 days"}
           </button>
         </form>
-        {visible && (
+        {!paused && visible && (
           <form action={changePost}>
             {fields("renew")}
             <button className="button button-outline">Renew 30 days</button>

@@ -13,7 +13,6 @@ export function MobileNav() {
         }}
       >
         <Link href="/#directory">Find people</Link>
-        <Link href="/add/person">Add yourself</Link>
         <Link href="/manage">Manage your posts</Link>
         <Link href="/about">About</Link>
       </nav>

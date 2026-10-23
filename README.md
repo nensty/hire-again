@@ -1,5 +1,7 @@
 # From zero to deployed
 
+> **Privacy review hold (23 October 2026): public browsing, new publication and automatic reminders are paused. Do not launch the earlier guest/third-party directory. See [the review and containment steps](docs/PRIVACY_SECURITY_REVIEW.md).** Real-person seeds are removed from the current source; earlier Git history and deployments may still contain them. Deploy this revision and apply the pending database hold to contain live access. Earlier feature descriptions below describe the held prototype, not an approval to publish.
+
 Find people from the PandaDoc community without losing them in the LinkedIn feed. One searchable list combines public job-search posts and profiles people publish themselves. Next.js App Router, React, TypeScript, Tailwind, Supabase Auth/Postgres/RLS, and Resend. No approval workflow or routine listing administration.
 
 ## 1. Install
@@ -16,7 +18,7 @@ pnpm dev
 
 Use the existing checkout. Each Codex cloud task is isolated; do not create a Git worktree unless specifically requested. This cloud machine has pnpm at `/workspace/.tools/node_modules/.bin/pnpm` if Corepack is unavailable.
 
-Without service credentials, the homepage reads the organizer-provided public links from the source file, respecting expiry. It shows job-search posts in the people list and the discussion under related links. No fictional profiles appear in production. Sign-in and writes explain when integrations are disconnected. To inspect a larger, read-only development dataset that also includes fictional profiles and roles:
+During the privacy hold the homepage shows no personal records, even with demo mode enabled. Production source fallback is empty, and only fictional fixtures remain for isolated tests. Sign-in and writes explain when integrations are disconnected. To inspect a larger, read-only development dataset that also includes fictional profiles and roles:
 
 ```sh
 DEMO_MODE=true pnpm dev
@@ -178,11 +180,11 @@ The homepage is one list with search by name, role, or skill, a Specialty filter
 
 Only an explicit matching source URL **and** matching name can collapse a post into a self-published profile; names alone never merge identities. Hidden/expired profiles do not suppress an otherwise public post. The results count describes entries, not verified unique identities. Related community and hiring links are kept separately from person results. In the development preview, post expiry is extended so fixtures remain usable; production never extends expiry automatically.
 
-The eight bootstrap links (seven people's posts plus a discussion thread) were explicitly supplied by the organizer. No LinkedIn profiles or comments were scraped; names/roles and availability are not independently verified.
+The earlier organizer-provided bootstrap records have been removed from the current source. Organizer submission did not establish each subject’s approval for a separate directory. No LinkedIn profiles or comments were scraped. See the privacy review for historical-copy and database containment requirements.
 
-Apply **all** migrations in filename order, including `202610220001_community_posts.sql` and `202610220002_shared_posts.sql` (`supabase db push` handles this for linked projects). They create the posts table, owner-only write policies, report support, retention cleanup, and idempotent source-link inserts. Existing projects should apply only pending migrations. Do not rerun the initial schema manually.
+Apply **all** migrations in filename order, including `202610220001_community_posts.sql` and `202610220002_shared_posts.sql` (`supabase db push` handles this for linked projects). They create the posts table, owner-only write policies, report support, retention cleanup, and owner-only controls; the former personal-data seed step is now inert. Existing projects should apply only pending migrations. Do not rerun the initial schema manually.
 
-When Supabase is not configured, the same provided links are read from `src/data/shared-posts.json` and still respect their expiry. With Supabase configured, the database is authoritative: errors are shown calmly, and hidden/deleted links are not reintroduced from the file. Apply the migrations to populate the production database; saving repository files does not write to a remote Supabase project.
+`src/data/shared-posts.json` is now empty. The application does not reintroduce organizer-provided links when Supabase is missing. With Supabase configured, the database is authoritative: errors are shown calmly, and hidden/deleted links are not reintroduced from the file. Apply the current migration chain to install the schema and privacy hold; it intentionally seeds no personal records. Saving repository files does not change a remote Supabase project.
 
 Use **Add someone** at `/add/post` with a person's name, optional role, and public job-search post. A name is required for looking-for-work posts so new entries can be found. Alternatively, or choose **Paste a list** to extract many URLs, review the proposed names/roles, and share up to 50 at once when signed in (up to 5 for guests). LinkedIn safety wrappers and tracking parameters are normalized locally. Duplicates are skipped, including when a partial import is retried. Optional skills and notes are folded away. Manage links shared while signed in at `/manage`. Posts are public for 30 days and retention cleanup uses the existing daily cron; post links do not receive reminder emails.
 

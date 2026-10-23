@@ -1,3 +1,4 @@
+import { privacyHoldActive } from "@/lib/privacy-hold";
 import Link from "next/link";
 import { Icon } from "./icon";
 import { MobileNav } from "./mobile-nav";
@@ -24,9 +25,12 @@ export function Header() {
           <Link href="/about">About</Link>
         </nav>
         <MobileNav />
-        <Link className="button button-small" href="/add/post">
+        <Link
+          className="button button-small"
+          href={privacyHoldActive() ? "/manage" : "/add/post"}
+        >
           <Icon name="plus" />
-          Add someone
+          {privacyHoldActive() ? "Manage my data" : "Add someone"}
         </Link>
       </div>
     </header>

@@ -7,17 +7,17 @@ import {
 } from "../src/lib/posts";
 import { parsePostList, suggestPostTags } from "../src/lib/post-import";
 import { readFilters, writeFilters, EMPTY_FILTERS } from "../src/lib/filters";
-import seed from "../src/data/shared-posts.json";
+import seed from "../src/data/demo-posts.json";
 const posts = seed as CommunityPost[];
 const now = Date.parse("2026-10-22T12:00:00Z");
 describe("sourced post collection", () => {
-  it("contains only the supplied discussion and seven supplied posts, not generated candidate profiles", () => {
+  it("uses eight fictional fixtures without candidate-profile creation", () => {
     expect(posts).toHaveLength(8);
+    expect(posts.find((p) => p.author_name === "Jamie Example")?.url).toBe(
+      "https://www.linkedin.com/posts/fictional-demo-7-000000000",
+    );
     expect(
-      posts.find((p) => p.author_name === "Aleksandra Dyadichkina")?.url,
-    ).toBe("https://lnkd.in/p/dft8SFe5");
-    expect(
-      posts.find((p) => p.author_name === "Pavel Chekan")?.skills,
+      posts.find((p) => p.author_name === "Taylor Example")?.skills,
     ).toContain("Python");
     expect(posts[0].author_name).toBeNull();
     expect(posts.every((p) => !("linkedin_url" in p))).toBe(true);
@@ -32,9 +32,9 @@ describe("sourced post collection", () => {
     );
     expect(
       normalizePostUrl(
-        "https://www.linkedin.com/safety/go/?url=https%3A%2F%2Flnkd.in%2Fp%2Fdft8SFe5&urlhash=unused",
+        "https://www.linkedin.com/safety/go/?url=https%3A%2F%2Fwww.linkedin.com%2Fposts%2Ffictional-demo-7-000000000&urlhash=unused",
       ),
-    ).toBe("https://lnkd.in/p/dft8SFe5");
+    ).toBe("https://www.linkedin.com/posts/fictional-demo-7-000000000");
   });
   it("rejects profiles, deceptive hosts, unsafe schemes and non-LinkedIn safety redirects", () => {
     for (const url of [
@@ -71,14 +71,14 @@ describe("sourced post collection", () => {
       filterPosts(
         posts,
         {
-          q: "Aleksandra manager",
+          q: "Jamie manager",
           function: "engineering",
           skills: "",
           postType: "looking",
         },
         now,
       ).map((p) => p.author_name),
-    ).toEqual(["Aleksandra Dyadichkina"]);
+    ).toEqual(["Jamie Example"]);
     expect(
       filterPosts(
         posts,
@@ -135,11 +135,11 @@ describe("sourced post collection", () => {
 describe("paste once, review, share", () => {
   it("extracts names/roles, decodes safety links, and deduplicates visible Markdown targets", () => {
     const text =
-      "Dmitry Zakutalin - SDET / Automation Engineer / Quality Engineer  If you’re looking for a strong professional, see [https://lnkd.in/p/gUK-9KBR](https://www.linkedin.com/safety/go/?url=https%3A%2F%2Flnkd.in%2Fp%2FgUK-9KBR&urlhash=unused)\n\nPavel Chekan - Senior Backend Engineer (Python)  https://lnkd.in/p/dGvXgHW4\n\nhttps://lnkd.in/p/gUK-9KBR";
+      "Morgan Example - SDET / Automation Engineer / Quality Engineer  If you’re looking for a strong professional, see [https://www.linkedin.com/posts/fictional-demo-2-000000000](https://www.linkedin.com/safety/go/?url=https%3A%2F%2Fwww.linkedin.com%2Fposts%2Ffictional-demo-2-000000000&urlhash=unused)\n\nTaylor Example - Senior Backend Engineer (Python)  https://www.linkedin.com/posts/fictional-demo-4-000000000\n\nhttps://www.linkedin.com/posts/fictional-demo-2-000000000";
     const result = parsePostList(text);
     expect(result.posts).toHaveLength(2);
     expect(result.duplicates).toBe(1);
-    expect(result.posts[0].author_name).toBe("Dmitry Zakutalin");
+    expect(result.posts[0].author_name).toBe("Morgan Example");
     expect(result.posts[0].role_label).toBe(
       "SDET / Automation Engineer / Quality Engineer",
     );
@@ -147,7 +147,9 @@ describe("paste once, review, share", () => {
     expect(result.posts[1].skills).toEqual(["Python"]);
   });
   it("leaves unknown people/roles blank rather than inventing them", () => {
-    const parsed = parsePostList("https://lnkd.in/p/dc8K-GpP");
+    const parsed = parsePostList(
+      "https://www.linkedin.com/posts/fictional-demo-1-000000000",
+    );
     expect(parsed.posts[0].author_name).toBe("");
     expect(parsed.posts[0].role_label).toBe("");
     expect(parsed.posts[0].kind).toBe("community");
@@ -158,7 +160,7 @@ describe("paste once, review, share", () => {
   });
   it("ignores unrelated links and never fetches or imports profile pages", () => {
     const parsed = parsePostList(
-      "https://example.com\nhttps://www.linkedin.com/in/person\nhttps://lnkd.in/p/dc8K-GpP",
+      "https://example.com\nhttps://www.linkedin.com/in/person\nhttps://www.linkedin.com/posts/fictional-demo-1-000000000",
     );
     expect(parsed.posts).toHaveLength(1);
     expect(parsed.ignored).toBe(2);

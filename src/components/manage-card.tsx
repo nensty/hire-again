@@ -6,7 +6,13 @@ import { changeListing } from "@/app/actions";
 import type { Candidate, Role } from "@/lib/types";
 import { isCandidate } from "@/lib/types";
 import { isPublic } from "@/lib/expiry";
-export function ManageCard({ listing }: { listing: Candidate | Role }) {
+export function ManageCard({
+  listing,
+  paused = false,
+}: {
+  listing: Candidate | Role;
+  paused?: boolean;
+}) {
   const person = isCandidate(listing);
   const kind = person ? "candidate" : "role";
   const path = `/${person ? "people" : "roles"}/${listing.slug}`;
@@ -34,7 +40,9 @@ export function ManageCard({ listing }: { listing: Candidate | Role }) {
         </div>
         <span className={`status-pill ${status}`}>
           {status === "active"
-            ? "Public"
+            ? paused
+              ? "Publication paused"
+              : "Public"
             : status === "closed"
               ? person
                 ? "Found a role"
@@ -62,30 +70,36 @@ export function ManageCard({ listing }: { listing: Candidate | Role }) {
               : listing.expires_at,
           ),
         )}
-        {status === "active" ? " · visible to everyone" : ""}
+        {status === "active" && !paused ? " · visible to everyone" : ""}
       </p>
       <div className="manage-actions">
-        {status === "active" && (
+        {!paused && status === "active" && (
           <Link className="button button-outline" href={path}>
             View
           </Link>
         )}
-        <Link
-          className="button button-outline"
-          href={`/add/${person ? "person" : "role"}?edit=${listing.id}`}
-        >
-          Edit
-        </Link>
+        {!paused && (
+          <>
+            <Link
+              className="button button-outline"
+              href={`/add/${person ? "person" : "role"}?edit=${listing.id}`}
+            >
+              Edit
+            </Link>
+          </>
+        )}
         <form action={changeListing}>
-          {fields(status === "active" ? "hide" : "show")}
+          {fields(paused || status === "active" ? "hide" : "show")}
           <ActionButton>
-            {status === "active" ? "Hide" : "Show for 30 days"}
+            {paused || status === "active" ? "Hide" : "Show for 30 days"}
           </ActionButton>
         </form>
-        <form action={changeListing}>
-          {fields("renew")}
-          <ActionButton>Renew 30 days</ActionButton>
-        </form>
+        {!paused && (
+          <form action={changeListing}>
+            {fields("renew")}
+            <ActionButton>Renew 30 days</ActionButton>
+          </form>
+        )}
         {status !== "closed" && (
           <form action={changeListing}>
             {fields("close")}

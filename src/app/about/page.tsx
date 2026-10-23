@@ -1,6 +1,10 @@
+import { privacyHoldActive } from "@/lib/privacy-hold";
+import { PrivacyHold } from "@/components/privacy-hold";
 import Link from "next/link";
 export const metadata = { title: "About" };
+export const dynamic = "force-dynamic";
 export default function About() {
+  if (privacyHoldActive()) return <PrivacyHold />;
   return (
     <article className="container page-content legal">
       <span className="eyebrow">OUR LITTLE CORNER OF THE INTERNET</span>

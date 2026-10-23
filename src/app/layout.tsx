@@ -11,13 +11,13 @@ export const metadata: Metadata = {
     template: "%s · People I’d Hire Again",
   },
   description:
-    "Find people from the PandaDoc community by name, role, or skill. Open their original post or profile and start a conversation.",
+    "Public browsing and new publication are paused during a privacy and consent review.",
   robots: { index: false, follow: false },
   openGraph: {
     type: "website",
     siteName: "People I’d Hire Again",
     title: "People I’d Hire Again",
-    description: "No noise. Just good people finding each other.",
+    description: "Public directory paused for privacy and consent review.",
     images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
   },
   twitter: { card: "summary_large_image" },

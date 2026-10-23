@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 export const metadata = { title: "Privacy" };
 export default function Privacy() {
   const contact = process.env.PROJECT_CONTACT_EMAIL;
@@ -11,7 +12,13 @@ export default function Privacy() {
       </h1>
       <p>
         People I’d Hire Again is a public, independent community directory. Last
-        updated: 22 October 2026.
+        updated: 23 October 2026.
+      </p>
+      <p className="notice" role="status">
+        Public browsing and new publication through this site are paused for a
+        privacy and consent review. The description below covers data handled by
+        the prototype. Copies in previous deployments, source history, or
+        provider backups may remain; pausing the site does not erase them.
       </p>
       <h2>What we collect</h2>
       <p>

@@ -1,3 +1,5 @@
+import { privacyHoldActive } from "@/lib/privacy-hold";
+import { PrivacyHold } from "@/components/privacy-hold";
 import { getPosts } from "@/lib/post-data";
 import { getDirectory } from "@/lib/data";
 import { Directory } from "@/components/directory";
@@ -7,6 +9,7 @@ export default async function Home({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  if (privacyHoldActive()) return <PrivacyHold />;
   const [data, postData, params] = await Promise.all([
     getDirectory(),
     getPosts(),

@@ -1,6 +1,9 @@
+import { privacyHoldActive } from "@/lib/privacy-hold";
+import { PrivacyHold } from "@/components/privacy-hold";
 import Link from "next/link";
 import { verifyToken } from "@/lib/tokens";
 import { actOnReminder } from "./actions";
+export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Keep your listing current",
   referrer: "no-referrer" as const,
@@ -10,6 +13,7 @@ export default async function Renew({
 }: {
   searchParams: Promise<{ t?: string; result?: string }>;
 }) {
+  if (privacyHoldActive()) return <PrivacyHold />;
   const { t, result } = await searchParams;
   const payload = t ? verifyToken(t, process.env.CRON_SECRET || "") : null;
   if (result === "renewed" || result === "hidden")

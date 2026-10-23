@@ -1,5 +1,7 @@
 # How collection can be automated
 
+**Historical prototype description: ingestion is blocked during the privacy hold.** See [the privacy review](PRIVACY_SECURITY_REVIEW.md). Do not automatically discover, ingest or publish people’s information pending a reviewed opt-in design.
+
 Implemented now:
 
 1. Paste one post link or a list of comments/introductions into Add someone.

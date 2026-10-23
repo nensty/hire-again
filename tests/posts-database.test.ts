@@ -1,7 +1,7 @@
 import { PGlite } from "@electric-sql/pglite";
 import { beforeAll, afterAll, describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
-import seed from "../src/data/shared-posts.json";
+import seed from "../src/data/demo-posts.json";
 let db: PGlite;
 const owner = "10000000-0000-4000-8000-000000000001",
   other = "20000000-0000-4000-8000-000000000002";
@@ -22,12 +22,27 @@ beforeAll(async () => {
     "202610220002_shared_posts.sql",
   ])
     await db.exec(readFileSync("supabase/migrations/" + file, "utf8"));
+  for (const row of seed)
+    await db.query(
+      "insert into community_posts(id,owner_id,url,title,author_name,role_label,function,skills,kind,note) values($1,null,$2,$3,$4,$5,$6,$7,$8,$9)",
+      [
+        row.id,
+        row.url,
+        row.title,
+        row.author_name,
+        row.role_label,
+        row.function,
+        row.skills,
+        row.kind,
+        row.note,
+      ],
+    );
 }, 30000);
 afterAll(async () => {
   await db?.close();
 });
 describe("post migrations, seed provenance, and ownership", () => {
-  it("seeds exactly the eight provided links, idempotently, with no invented auth users or candidate profiles", async () => {
+  it("keeps fictional fixtures out of candidate profiles and leaves the retired seed migration inert", async () => {
     const rows = await db.query<{ url: string; author_name: string | null }>(
       "select url,author_name from community_posts",
     );

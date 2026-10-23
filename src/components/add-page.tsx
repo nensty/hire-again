@@ -1,3 +1,5 @@
+import { privacyHoldActive } from "@/lib/privacy-hold";
+import { PrivacyHold } from "@/components/privacy-hold";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { supabaseServer } from "@/lib/supabase/server";
@@ -13,6 +15,7 @@ export async function AddPage({
   kind: EntityType;
   edit?: string;
 }) {
+  if (privacyHoldActive()) return <PrivacyHold />;
   const person = kind === "candidate";
   const next = `/add/${person ? "person" : "role"}${edit ? `?edit=${encodeURIComponent(edit)}` : ""}`;
   const client = await supabaseServer();

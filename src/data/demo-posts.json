@@ -1,0 +1,148 @@
+[
+  {
+    "id": "90000000-0000-4000-8000-000000000001",
+    "url": "https://www.linkedin.com/posts/fictional-demo-1-000000000",
+    "title": "Fictional community discussion",
+    "author_name": null,
+    "role_label": null,
+    "function": null,
+    "skills": [],
+    "kind": "community",
+    "note": "Fictional test fixture. Not a real person or opportunity.",
+    "status": "active",
+    "expires_at": "2026-11-21T00:00:00.000Z",
+    "created_at": "2026-10-22T00:00:00.000Z",
+    "updated_at": "2026-10-22T00:00:00.000Z",
+    "closed_at": null
+  },
+  {
+    "id": "90000000-0000-4000-8000-000000000002",
+    "url": "https://www.linkedin.com/posts/fictional-demo-2-000000000",
+    "title": "SDET / Automation Engineer / Quality Engineer",
+    "author_name": "Morgan Example",
+    "role_label": "SDET / Automation Engineer / Quality Engineer",
+    "function": "QA / Automation",
+    "skills": [
+      "SDET",
+      "Automation",
+      "Quality engineering"
+    ],
+    "kind": "looking",
+    "note": "Fictional test fixture. Not a real person or opportunity.",
+    "status": "active",
+    "expires_at": "2026-11-21T00:00:00.000Z",
+    "created_at": "2026-10-22T00:00:00.000Z",
+    "updated_at": "2026-10-22T00:00:00.000Z",
+    "closed_at": null
+  },
+  {
+    "id": "90000000-0000-4000-8000-000000000003",
+    "url": "https://www.linkedin.com/posts/fictional-demo-3-000000000",
+    "title": "Senior Automation Engineer",
+    "author_name": "Jordan Example",
+    "role_label": "Senior Automation Engineer",
+    "function": "QA / Automation",
+    "skills": [
+      "Automation"
+    ],
+    "kind": "looking",
+    "note": "Fictional test fixture. Not a real person or opportunity.",
+    "status": "active",
+    "expires_at": "2026-11-21T00:00:00.000Z",
+    "created_at": "2026-10-22T00:00:00.000Z",
+    "updated_at": "2026-10-22T00:00:00.000Z",
+    "closed_at": null
+  },
+  {
+    "id": "90000000-0000-4000-8000-000000000004",
+    "url": "https://www.linkedin.com/posts/fictional-demo-4-000000000",
+    "title": "Senior Backend Engineer (Python)",
+    "author_name": "Taylor Example",
+    "role_label": "Senior Backend Engineer (Python)",
+    "function": "Engineering",
+    "skills": [
+      "Python",
+      "Backend engineering"
+    ],
+    "kind": "looking",
+    "note": "Fictional test fixture. Not a real person or opportunity.",
+    "status": "active",
+    "expires_at": "2026-11-21T00:00:00.000Z",
+    "created_at": "2026-10-22T00:00:00.000Z",
+    "updated_at": "2026-10-22T00:00:00.000Z",
+    "closed_at": null
+  },
+  {
+    "id": "90000000-0000-4000-8000-000000000005",
+    "url": "https://www.linkedin.com/posts/fictional-demo-5-000000000",
+    "title": "Senior UX Designer",
+    "author_name": "Avery Example",
+    "role_label": "Senior UX Designer",
+    "function": "Design",
+    "skills": [
+      "UX design"
+    ],
+    "kind": "looking",
+    "note": "Fictional test fixture. Not a real person or opportunity.",
+    "status": "active",
+    "expires_at": "2026-11-21T00:00:00.000Z",
+    "created_at": "2026-10-22T00:00:00.000Z",
+    "updated_at": "2026-10-22T00:00:00.000Z",
+    "closed_at": null
+  },
+  {
+    "id": "90000000-0000-4000-8000-000000000006",
+    "url": "https://www.linkedin.com/posts/fictional-demo-6-000000000",
+    "title": "Senior Frontend Engineer",
+    "author_name": "Robin Example",
+    "role_label": "Senior Frontend Engineer",
+    "function": "Engineering",
+    "skills": [
+      "Frontend engineering"
+    ],
+    "kind": "looking",
+    "note": "Fictional test fixture. Not a real person or opportunity.",
+    "status": "active",
+    "expires_at": "2026-11-21T00:00:00.000Z",
+    "created_at": "2026-10-22T00:00:00.000Z",
+    "updated_at": "2026-10-22T00:00:00.000Z",
+    "closed_at": null
+  },
+  {
+    "id": "90000000-0000-4000-8000-000000000007",
+    "url": "https://www.linkedin.com/posts/fictional-demo-7-000000000",
+    "title": "Senior Engineering Manager",
+    "author_name": "Jamie Example",
+    "role_label": "Senior Engineering Manager",
+    "function": "Engineering",
+    "skills": [
+      "Engineering management"
+    ],
+    "kind": "looking",
+    "note": "Fictional test fixture. Not a real person or opportunity.",
+    "status": "active",
+    "expires_at": "2026-11-21T00:00:00.000Z",
+    "created_at": "2026-10-22T00:00:00.000Z",
+    "updated_at": "2026-10-22T00:00:00.000Z",
+    "closed_at": null
+  },
+  {
+    "id": "90000000-0000-4000-8000-000000000008",
+    "url": "https://www.linkedin.com/posts/fictional-demo-8-000000000",
+    "title": "Team Lead DevOps",
+    "author_name": "Riley Example",
+    "role_label": "Team Lead DevOps",
+    "function": "DevOps / SRE",
+    "skills": [
+      "DevOps",
+      "Team leadership"
+    ],
+    "kind": "looking",
+    "note": "Fictional test fixture. Not a real person or opportunity.",
+    "status": "active",
+    "expires_at": "2026-11-21T00:00:00.000Z",
+    "created_at": "2026-10-22T00:00:00.000Z",
+    "updated_at": "2026-10-22T00:00:00.000Z",
+    "closed_at": null
+  }
+]

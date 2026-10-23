@@ -41,11 +41,7 @@ grant select,insert,update,delete on public.community_posts to authenticated;
 grant all on public.community_posts to service_role;
 alter table public.reports drop constraint reports_entity_type_check;
 alter table public.reports add constraint reports_entity_type_check check(entity_type in ('candidate','role','post'));
--- Exact link supplied by the organizer. No authors, roles, post dates, or comments were inferred.
-insert into public.community_posts(id,owner_id,url,title,kind,note) values(
- 'ba538e0c-1f62-4ec3-91c5-b29e9aa9eb96',null,'https://lnkd.in/p/dc8K-GpP','Shared LinkedIn discussion','community',
- 'A discussion shared by the community organizer. Open the original thread and comments on LinkedIn.'
-) on conflict do nothing;
+-- Personal source-link seeds removed during the privacy review.
 create or replace function public.retention_cleanup() returns void language plpgsql security definer set search_path='' as $$
 begin
  delete from public.candidate_profiles where (status='closed' and closed_at<now()-interval '30 days') or (status<>'closed' and expires_at<now()-interval '30 days');

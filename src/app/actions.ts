@@ -1,4 +1,5 @@
 "use server";
+import { privacyHoldActive, PRIVACY_HOLD_MESSAGE } from "@/lib/privacy-hold";
 import { redirect } from "next/navigation";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
@@ -72,6 +73,7 @@ export async function saveListing(
   _state: ActionState,
   form: FormData,
 ): Promise<ActionState> {
+  if (privacyHoldActive()) return { message: PRIVACY_HOLD_MESSAGE };
   if (!["candidate", "role"].includes(kind) || isDemo())
     return { message: "Publishing is disabled in the development preview." };
   const parsed = (
@@ -143,6 +145,12 @@ export async function changeListing(form: FormData) {
     })
     .safeParse(Object.fromEntries(form));
   if (!parsed.success || isDemo()) redirect("/manage?notice=error");
+  if (
+    privacyHoldActive() &&
+    parsed.success &&
+    !["hide", "close", "delete"].includes(parsed.data.action)
+  )
+    redirect("/manage?notice=paused");
   const client = await supabaseServer();
   if (!client) redirect("/login");
   const {

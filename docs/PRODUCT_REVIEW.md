@@ -1,5 +1,7 @@
 # Product focus and UX review — 22 October 2026
 
+**Historical design notes; publication is now paused.** The [privacy/security review](PRIVACY_SECURITY_REVIEW.md) supersedes the earlier publication assumptions. Examples in this file are fictional; no subject approval is inferred from an organizer sharing a link.
+
 ## The value
 
 Help someone find a person from the PandaDoc community and reach their original post, without searching through a noisy feed. The organizer's concrete task is: “I saw my engineering-manager colleague's post, lost it, and spent half an hour finding it again.”
@@ -27,6 +29,6 @@ LinkedIn, Nielsen Norman Group pages, and the GOV.UK website were blocked by the
 
 ## Validation
 
-Find Aleksandra by name or engineering-manager role from the homepage, without choosing a data source. Search a skill across profiles and posts. Follow the original link. Open a filtered URL after reload. Confirm legacy People/Posts links open the same list. Add a person without login, or paste a list and correct it before publishing. Check hidden/expired visibility, explicit-source deduplication, owner-only writes, and guest quotas independently of the UI. Check keyboard access, automated WCAG AA, and overflow at 375/430/768/1440px.
+Find Jamie by name or engineering-manager role from the homepage, without choosing a data source. Search a skill across profiles and posts. Follow the original link. Open a filtered URL after reload. Confirm legacy People/Posts links open the same list. Add a person without login, or paste a list and correct it before publishing. Check hidden/expired visibility, explicit-source deduplication, owner-only writes, and guest quotas independently of the UI. Check keyboard access, automated WCAG AA, and overflow at 375/430/768/1440px.
 
 A useful next test with real people: can someone explain the page's purpose and find a relevant person in under two minutes? Automated checks do not establish that outcome. Avoid expanding navigation until actual usage shows a second important task.

@@ -1,4 +1,5 @@
 "use server";
+import { privacyHoldActive } from "@/lib/privacy-hold";
 import { redirect } from "next/navigation";
 import { revalidateTag } from "next/cache";
 import { verifyToken } from "@/lib/tokens";
@@ -12,6 +13,8 @@ export async function actOnReminder(form: FormData) {
   const action = form.get("action");
   if (!payload || !["renew", "hide"].includes(String(action)))
     redirect("/renew?result=invalid");
+  if (privacyHoldActive() && action !== "hide")
+    redirect("/manage?notice=paused");
   const update =
     action === "hide"
       ? { status: "hidden" }

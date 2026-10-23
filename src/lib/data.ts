@@ -1,4 +1,5 @@
 import "server-only";
+import { privacyHoldActive } from "./privacy-hold";
 import { createClient } from "@supabase/supabase-js";
 import { unstable_cache } from "next/cache";
 import { publicConfig, isDemo } from "./env";
@@ -48,6 +49,15 @@ const cachedDirectory = unstable_cache(
 );
 export async function getDirectory(): Promise<DirectoryData> {
   const asOf = Date.now();
+  if (privacyHoldActive())
+    return {
+      asOf,
+      people: [],
+      roles: [],
+      unavailable: false,
+      demo: false,
+      configured: false,
+    };
   if (isDemo())
     return {
       asOf,

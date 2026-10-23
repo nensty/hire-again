@@ -1,3 +1,5 @@
+import { privacyHoldActive } from "@/lib/privacy-hold";
+import { PrivacyHold } from "@/components/privacy-hold";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -7,12 +9,14 @@ import { LoginForm } from "@/components/login-form";
 import { SharePost } from "@/components/share-post";
 import { PostForm } from "@/components/post-form";
 import type { CommunityPost } from "@/lib/posts";
+export const dynamic = "force-dynamic";
 export const metadata = { title: "Add someone" };
 export default async function AddPost({
   searchParams,
 }: {
   searchParams: Promise<{ edit?: string }>;
 }) {
+  if (privacyHoldActive()) return <PrivacyHold />;
   const { edit } = await searchParams;
   if (edit && !z.uuid().safeParse(edit).success)
     redirect("/manage?notice=missing");

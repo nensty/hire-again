@@ -1,3 +1,7 @@
+vi.mock("@/lib/privacy-hold", () => ({
+  privacyHoldActive: () => false,
+  PRIVACY_HOLD_MESSAGE: "Paused",
+}));
 import { beforeEach, describe, it, expect, vi } from "vitest";
 import { demoPeople, demoRoles } from "../src/lib/demo";
 const stubs = vi.hoisted(() => ({

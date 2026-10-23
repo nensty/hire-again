@@ -1,3 +1,4 @@
+import { privacyHoldActive } from "@/lib/privacy-hold";
 import { NextResponse, type NextRequest } from "next/server";
 import { timingSafeEqual } from "node:crypto";
 import { Resend } from "resend";
@@ -34,6 +35,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { error: "Cleanup could not complete." },
       { status: 503 },
+    );
+  if (privacyHoldActive())
+    return NextResponse.json(
+      { cleanup: true, reminders: "paused" },
+      { headers: { "Cache-Control": "no-store" } },
     );
   if (!process.env.RESEND_API_KEY || !process.env.EMAIL_FROM)
     return NextResponse.json(

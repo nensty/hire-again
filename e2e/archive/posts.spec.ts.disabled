@@ -8,16 +8,16 @@ test("find the supplied engineering manager post in seconds and preserve a share
   await expect(page.getByRole("group", { name: "Directory view" })).toHaveCount(
     0,
   );
-  await page.getByRole("searchbox").fill("Aleksandra manager");
+  await page.getByRole("searchbox").fill("Jamie manager");
   await expect(page.locator(".person-result")).toHaveCount(1);
   await expect(
     page
       .locator(".person-result")
       .getByRole("link", { name: "Read on LinkedIn" }),
-  ).toHaveAttribute("href", "https://lnkd.in/p/dft8SFe5");
-  await expect(page).toHaveURL(/q=Aleksandra/);
+  ).toHaveAttribute("href", "https://www.linkedin.com/posts/fictional-demo-7-000000000");
+  await expect(page).toHaveURL(/q=Jamie/);
   await page.reload();
-  await expect(page.getByRole("searchbox")).toHaveValue("Aleksandra manager");
+  await expect(page.getByRole("searchbox")).toHaveValue("Jamie manager");
   await expect(page.locator(".person-result")).toHaveCount(1);
   await page
     .getByRole("button", { name: "Clear filters", exact: true })
@@ -26,7 +26,7 @@ test("find the supplied engineering manager post in seconds and preserve a share
   await page.getByText("Related community links", { exact: true }).click();
   await expect(
     page.getByRole("link", { name: "Shared LinkedIn discussion" }),
-  ).toHaveAttribute("href", "https://lnkd.in/p/dc8K-GpP");
+  ).toHaveAttribute("href", "https://www.linkedin.com/posts/fictional-demo-1-000000000");
 });
 test("one search finds both shared posts and self-published profiles", async ({
   page,
@@ -39,7 +39,7 @@ test("one search finds both shared posts and self-published profiles", async ({
   await page.getByRole("searchbox").fill("SDET");
   await expect(page.locator(".person-result")).toHaveCount(1);
   await expect(page.locator(".person-result")).toContainText(
-    "Dmitry Zakutalin",
+    "Morgan Example",
   );
   await page
     .getByRole("button", { name: "Clear filters", exact: true })
@@ -72,7 +72,7 @@ test("paste a list, review names and roles, and remove a mistaken entry before s
   await page
     .getByLabel("Posts or comments")
     .fill(
-      "Alex Example - Engineering Manager  https://lnkd.in/p/test-first\n\nPavel Example - Backend Engineer (Python)  https://lnkd.in/p/test-second",
+      "Alex Example - Engineering Manager  https://lnkd.in/p/test-first\n\nTaylor Example - Backend Engineer (Python)  https://lnkd.in/p/test-second",
     );
   await page.getByRole("button", { name: "Review posts" }).click();
   await expect(page.locator(".import-row")).toHaveCount(2);

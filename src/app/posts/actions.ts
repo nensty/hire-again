@@ -1,4 +1,5 @@
 "use server";
+import { privacyHoldActive, PRIVACY_HOLD_MESSAGE } from "@/lib/privacy-hold";
 import { redirect } from "next/navigation";
 import { revalidateTag, revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -13,6 +14,7 @@ export async function savePost(
   _state: ActionState,
   form: FormData,
 ): Promise<ActionState> {
+  if (privacyHoldActive()) return { message: PRIVACY_HOLD_MESSAGE };
   if (isDemo())
     return { message: "Sharing is disabled in the fictional preview." };
   if (form.get("website_confirm"))
@@ -93,6 +95,12 @@ export async function changePost(form: FormData) {
     })
     .safeParse(Object.fromEntries(form));
   if (!parsed.success || isDemo()) redirect("/manage?notice=error");
+  if (
+    privacyHoldActive() &&
+    parsed.success &&
+    !["hide", "close", "delete"].includes(parsed.data.action)
+  )
+    redirect("/manage?notice=paused");
   const client = await supabaseServer();
   if (!client) redirect("/login");
   const {
@@ -131,6 +139,7 @@ export async function importPosts(
   _state: ActionState,
   form: FormData,
 ): Promise<ActionState> {
+  if (privacyHoldActive()) return { message: PRIVACY_HOLD_MESSAGE };
   if (isDemo())
     return { message: "Sharing is disabled in the fictional preview." };
   if (form.get("website_confirm"))

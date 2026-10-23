@@ -1,10 +1,11 @@
 import "server-only";
+import { privacyHoldActive } from "./privacy-hold";
 import { createClient } from "@supabase/supabase-js";
 import { unstable_cache } from "next/cache";
 import { publicConfig, isDemo } from "./env";
 import { isPublic } from "./expiry";
 import type { CommunityPost } from "./posts";
-import sharedPosts from "@/data/shared-posts.json";
+import demoPosts from "@/data/demo-posts.json";
 export const POST_COLUMNS =
   "id,url,title,author_name,role_label,function,skills,kind,note,status,expires_at,created_at,updated_at,closed_at";
 
@@ -46,10 +47,11 @@ export async function getPosts(): Promise<{
   posts: CommunityPost[];
   unavailable: boolean;
 }> {
+  if (privacyHoldActive()) return { posts: [], unavailable: false };
   if (isDemo()) {
     return {
       posts: orderPosts(
-        (sharedPosts as CommunityPost[]).map((p) => ({
+        (demoPosts as CommunityPost[]).map((p) => ({
           ...p,
           expires_at: new Date(Date.now() + 30 * 86400000).toISOString(),
         })),
@@ -57,13 +59,7 @@ export async function getPosts(): Promise<{
       unavailable: false,
     };
   }
-  if (!publicConfig())
-    return {
-      posts: orderPosts(
-        (sharedPosts as CommunityPost[]).filter((p) => isPublic(p)),
-      ),
-      unavailable: false,
-    };
+  if (!publicConfig()) return { posts: [], unavailable: false };
   try {
     return {
       posts: orderPosts((await cachedPosts()).filter((p) => isPublic(p))),

@@ -1,3 +1,4 @@
+import { privacyHoldActive } from "@/lib/privacy-hold";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { supabaseServer } from "@/lib/supabase/server";
@@ -7,12 +8,14 @@ import type { CommunityPost } from "@/lib/posts";
 import { ManageCard } from "@/components/manage-card";
 import { signOut } from "../actions";
 import type { Candidate, Role } from "@/lib/types";
+export const dynamic = "force-dynamic";
 export const metadata = { title: "Manage your listings" };
 export default async function Manage({
   searchParams,
 }: {
   searchParams: Promise<{ notice?: string }>;
 }) {
+  const paused = privacyHoldActive();
   const client = await supabaseServer();
   const user = client ? (await client.auth.getUser()).data.user : null;
   if (!user || !client)
@@ -46,8 +49,12 @@ export default async function Manage({
   const people = peopleResult.data as Candidate[],
     roles = rolesResult.data as Role[];
   const notices: Record<string, string> = {
+    paused:
+      "Publication is paused during the privacy review. You can hide or delete your own records.",
     saved: "Your changes are saved.",
-    renewed: "A fresh 30 days. Your listing is public again.",
+    renewed: paused
+      ? "Publication is paused during the privacy review."
+      : "A fresh 30 days. Your listing is public again.",
     deleted: "Your listing has been deleted.",
     missing: "We couldn’t find that listing.",
     error: "We couldn’t make that change. Please try again.",
@@ -65,8 +72,9 @@ export default async function Manage({
         </form>
       </div>
       <p className="page-intro">
-        Keep things current. Everything here is yours to edit, hide, renew, or
-        remove.
+        {paused
+          ? "Publication through the site is paused. You can hide or delete records belonging to this account."
+          : "Keep things current. Everything here is yours to edit, hide, renew, or remove."}
       </p>
       {params.notice && (
         <p
@@ -80,13 +88,21 @@ export default async function Manage({
       <section className="manage-section">
         <h2>Your profile</h2>
         {people.length ? (
-          people.map((p) => <ManageCard key={p.id} listing={p} />)
+          people.map((p) => (
+            <ManageCard key={p.id} listing={p} paused={paused} />
+          ))
         ) : (
           <div className="notice">
-            Ready for a new chapter?{" "}
-            <Link className="text-link" href="/add/person">
-              Add yourself →
-            </Link>
+            {paused ? (
+              "No profile is stored for this account."
+            ) : (
+              <>
+                Ready for a new chapter?{" "}
+                <Link className="text-link" href="/add/person">
+                  Add yourself →
+                </Link>
+              </>
+            )}
           </div>
         )}
       </section>
@@ -98,25 +114,29 @@ export default async function Manage({
           </p>
         ) : (
           (postsResult.data as CommunityPost[]).map((post) => (
-            <ManagePostCard key={post.id} post={post} />
+            <ManagePostCard key={post.id} post={post} paused={paused} />
           ))
         )}
-        <div className="action-row">
-          <Link className="button button-outline" href="/add/post">
-            Share a LinkedIn post →
-          </Link>
-        </div>
+        {!paused && (
+          <div className="action-row">
+            <Link className="button button-outline" href="/add/post">
+              Share a LinkedIn post →
+            </Link>
+          </div>
+        )}
       </section>
       <section className="manage-section">
         <h2>Your hiring roles</h2>
         {roles.map((r) => (
-          <ManageCard key={r.id} listing={r} />
+          <ManageCard key={r.id} listing={r} paused={paused} />
         ))}
-        <div className="action-row">
-          <Link className="button button-outline" href="/add/role">
-            Share {roles.length ? "another" : "a"} role →
-          </Link>
-        </div>
+        {!paused && (
+          <div className="action-row">
+            <Link className="button button-outline" href="/add/role">
+              Share {roles.length ? "another" : "a"} role →
+            </Link>
+          </div>
+        )}
       </section>
     </div>
   );

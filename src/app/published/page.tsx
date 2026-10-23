@@ -1,13 +1,17 @@
+import { privacyHoldActive } from "@/lib/privacy-hold";
+import { PrivacyHold } from "@/components/privacy-hold";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { supabaseServer } from "@/lib/supabase/server";
 import { CopyButton } from "@/components/copy-button";
+export const dynamic = "force-dynamic";
 export const metadata = { title: "You’re in" };
 export default async function Published({
   searchParams,
 }: {
   searchParams: Promise<{ kind?: string; slug?: string }>;
 }) {
+  if (privacyHoldActive()) return <PrivacyHold />;
   const { kind, slug } = await searchParams;
   const client = await supabaseServer();
   const user = client ? (await client.auth.getUser()).data.user : null;

@@ -1,5 +1,7 @@
 # Owner-controlled launch actions
 
+**Do not launch during the privacy review hold.** Complete the [privacy containment and release gates](docs/PRIVACY_SECURITY_REVIEW.md) first. In particular, restrict repository access/history, deploy the hold, and apply `202610230001_privacy_hold.sql` if a database was connected. Configure a monitored operator contact and subject-controlled approval/withdrawal before any reopening.
+
 - [ ] Create a Supabase project in the appropriate region; apply all repository migrations in filename order using its SQL editor or authenticated Supabase CLI.
 - [ ] Copy the project URL, publishable key, and server-only secret key into Vercel environment settings.
 - [ ] Verify a sender domain in Resend, publish its required DNS records, create an API key, and configure `RESEND_API_KEY` and `EMAIL_FROM` in Vercel.

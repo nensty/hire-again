@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { collectPeople, searchPeople } from "../src/lib/people";
 import { demoPeople } from "../src/lib/demo";
 import { postSchema, type CommunityPost } from "../src/lib/posts";
-import source from "../src/data/shared-posts.json";
+import source from "../src/data/demo-posts.json";
 const now = Date.parse("2026-10-22T12:00:00Z");
 const posts = source as CommunityPost[];
 const profiles = demoPeople.map((p) => ({
@@ -23,8 +23,8 @@ describe("one list of people", () => {
       false,
     );
     expect(
-      searchPeople(people, "Aleksandra manager", "").map((p) => p.name),
-    ).toEqual(["Aleksandra Dyadichkina"]);
+      searchPeople(people, "Jamie manager", "").map((p) => p.name),
+    ).toEqual(["Jamie Example"]);
     expect(searchPeople(people, "Alex Morgan", "")[0].profile?.slug).toBe(
       "alex-morgan-demo",
     );
@@ -42,9 +42,7 @@ describe("one list of people", () => {
     ).toHaveLength(0);
   });
   it("combines duplicate references only for the same explicit source and matching name, preserving the owner-published profile", () => {
-    const target = posts.find(
-      (p) => p.author_name === "Aleksandra Dyadichkina",
-    )!;
+    const target = posts.find((p) => p.author_name === "Jamie Example")!;
     const profile = {
       ...profiles[0],
       full_name: target.author_name!,
@@ -76,10 +74,10 @@ describe("one list of people", () => {
     expect(searchPeople(people, "", "qa-automation")).toHaveLength(3);
     expect(
       searchPeople(people, "SDET", "qa-automation").map((p) => p.name),
-    ).toEqual(["Dmitry Zakutalin"]);
+    ).toEqual(["Morgan Example"]);
     expect(
       searchPeople(people, "Python", "engineering").map((p) => p.name),
-    ).toEqual(["Pavel Chekan"]);
+    ).toEqual(["Taylor Example"]);
   });
   it("requires a name for a new looking-for-work post so the entry can be found", () => {
     const payload = {
